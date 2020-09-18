@@ -25,8 +25,12 @@ namespace Pong_Game
         // Constructor of MonoGame game class
         public PongGame()
         {
+            // MonoGame required lines
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            // Set window name
+            this.Window.Title = "Pong";
         }
 
         /// <summary>
