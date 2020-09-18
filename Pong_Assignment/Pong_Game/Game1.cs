@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Pong_Game
 {
@@ -11,6 +12,9 @@ namespace Pong_Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        private const int playerSpeed = 2;
+        private const int ballSpeed = 5;
 
         public Game1()
         {
@@ -39,8 +43,6 @@ namespace Pong_Game
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -62,7 +64,27 @@ namespace Pong_Game
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            Rectangle screenSize = GraphicsDevice.Viewport.Bounds;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
+            {
+                // playerOne.Y += playerSpeed;
+            }
+            
+            if (Keyboard.GetState().IsKeyDown(Keys.W))
+            {
+                // playerOne.Y -= playerSpeed;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                // playerTwo.Y += playerSpeed;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            {
+                // playerTwo.Y -= playerSpeed;
+            }
 
             base.Update(gameTime);
         }
@@ -73,9 +95,9 @@ namespace Pong_Game
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
+            // Draw here
 
             base.Draw(gameTime);
         }
