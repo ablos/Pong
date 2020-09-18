@@ -54,8 +54,8 @@ namespace Pong_Game
             List<Player> _players = new List<Player>();
 
             // Create players one and two
-            Player playerOne = new Player(Color.Red, PlayField.TopLeft, GraphicsDevice, spriteBatch);
-            Player playerTwo = new Player(Color.Yellow, PlayField.BottomLeft, GraphicsDevice, spriteBatch);
+            Player playerOne = new Player(Color.Red, PlayField.Left, GraphicsDevice, spriteBatch);
+            Player playerTwo = new Player(Color.Yellow, PlayField.Right, GraphicsDevice, spriteBatch);
 
             // Add all players to the player list
             _players.Add(playerOne);
