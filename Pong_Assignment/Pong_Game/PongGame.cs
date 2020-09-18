@@ -7,6 +7,9 @@ using System.Diagnostics;
 
 namespace Pong_Game
 {
+    // Create an enum for gamestates
+    public enum GameState { InMenu, Playing, GameOver};
+
     // Create an enum to determine where a player is allowed to play
     public enum PlayField { Left, Right, TopLeft, TopRight, BottomLeft, BottomRight };
 
