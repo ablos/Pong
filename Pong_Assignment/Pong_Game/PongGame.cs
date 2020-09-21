@@ -154,6 +154,17 @@ namespace Pong_Game
         }
     }
 
+    public class Ball
+    {
+        private const int speed = 5;
+        public Point location;
+        private readonly Point size = new Point(15, 15);
+        public Color color;
+        private GraphicsDevice gDevice;
+        private SpriteBatch spriteBatch;
+
+    }
+
     // Player class
     public class Player
     {
