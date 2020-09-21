@@ -23,6 +23,7 @@ namespace Pong_Game
 
         private bool fourPlayers = false;           // Variable to determine if game should be played with four or two players
         Player[] players;                           // Array to store all players created
+        Ball ball;
 
         // Constructor of MonoGame game class
         public PongGame()
@@ -87,6 +88,10 @@ namespace Pong_Game
             
             // Convert the player list to an array and store it (arrays are faster and use less memory)
             players = _players.ToArray();
+
+            ball = new Ball(Content.Load<Texture2D>("ball"), GraphicsDevice, spriteBatch);
+
+      
         }
 
         /// <summary>
@@ -145,11 +150,14 @@ namespace Pong_Game
             foreach (Player p in players)
                 p.Draw();
 
+            ball.Draw();
+
             // End the spritebatch
             spriteBatch.End();
 
             // Execute MonoGame base draw method
             base.Draw(gameTime);
+
         }
     }
 
@@ -157,11 +165,24 @@ namespace Pong_Game
     {
         private const int speed = 5;
         public Point location;
-        private readonly Point size = new Point(15, 15);
-        public Color color;
+        private readonly Point size = new Point(18, 18);
+        public Color color = Color.White;
         private GraphicsDevice gDevice;
         private SpriteBatch spriteBatch;
+        private Texture2D texture;
 
+        public Ball(Texture2D texture, GraphicsDevice gDevice, SpriteBatch spriteBatch)
+        {
+            this.texture = texture;
+            this.gDevice = gDevice;
+            this.spriteBatch = spriteBatch;
+            location = new Point((gDevice.Viewport.Bounds.Width / 2) - (size.X / 2), (gDevice.Viewport.Bounds.Height / 2) - (size.Y / 2));
+        }
+
+        public void Draw()
+        {
+            spriteBatch.Draw(texture, new Rectangle(location, size), color);
+        }
     }
 
     // Player class
