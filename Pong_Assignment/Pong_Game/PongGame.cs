@@ -21,7 +21,6 @@ namespace Pong_Game
         GraphicsDeviceManager graphics;             // Variable to store the MonoGame Graphics Device Manager
         SpriteBatch spriteBatch;                    // Variable to store the MonoGame Sprite Batch
 
-        private const int ballSpeed = 5;            // Variable to store the speed of the ball
         private bool fourPlayers = false;           // Variable to determine if game should be played with four or two players
         Player[] players;                           // Array to store all players created
 
@@ -162,7 +161,7 @@ namespace Pong_Game
         private readonly Point size = new Point(20, 80);        // Set size of player (is for every player, readonly to prevent accedental edits)
         public Point location;                                  // Variable to store player location
         private Texture2D texture;                              // Variable to store the texture of the player
-        private Color color;                                    // Variable to store the color of the player
+        public Color color;                                     // Variable to store the color of the player
         private GraphicsDevice gDevice;                         // Variable to store the GrapicsDevice from game
         private SpriteBatch spriteBatch;                        // Variable to store spriteBatch
         public PlayField playField;                             // Variable to store playfield for player -> where is he allowed to play
