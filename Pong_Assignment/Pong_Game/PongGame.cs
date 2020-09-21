@@ -128,15 +128,19 @@ namespace Pong_Game
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 players[1].Move(true);
 
+            // When C key is pressed (only execute when playing with 4 players)
             if (Keyboard.GetState().IsKeyDown(Keys.C) && fourPlayers)
                 players[2].Move(false);
 
+            // When F key is pressed (only execute when playing with 4 players)
             if (Keyboard.GetState().IsKeyDown(Keys.F) && fourPlayers)
                 players[2].Move(true);
 
+            // When ? key is pressed (only execute when playing with 4 players)
             if (Keyboard.GetState().IsKeyDown(Keys.OemQuestion) && fourPlayers)
                 players[3].Move(false);
 
+            // When ' key is pressed (only execute when playing with 4 players)
             if (Keyboard.GetState().IsKeyDown(Keys.OemQuotes) && fourPlayers)
                 players[3].Move(true);
 
@@ -163,6 +167,7 @@ namespace Pong_Game
             foreach (Player p in players)
                 p.Draw();
 
+            // Draw the ball
             ball.Draw();
 
             // End the spritebatch
@@ -190,16 +195,19 @@ namespace Pong_Game
         // Constructor of the ball class
         public Ball(Texture2D texture, GraphicsDevice gDevice, SpriteBatch spriteBatch)
         {
-            this.texture = texture;
-            this.gDevice = gDevice;
-            this.spriteBatch = spriteBatch;
+            this.texture = texture;             // Copy the given texture value to the local texture variable
+            this.gDevice = gDevice;             // Save the GraphicsDevice in a local variable
+            this.spriteBatch = spriteBatch;     // Save the Sprite Batch in a local variable
 
+            // Position the ball in the middle of the screen
             location = new Vector2((gDevice.Viewport.Bounds.Width / 2) - (size.X / 2), (gDevice.Viewport.Bounds.Height / 2) - (size.Y / 2));
 
+            // Get a random angle and make sure it is above the minimum angle
             float r = (float)random.NextDouble();
             if (r < minimumAngle)
                 r = minimumAngle;
 
+            // Set the direction according to the angle
             direction = new Vector2((random.Next(1, 3) == 1 ? 1 : -1) * r, (random.Next(1, 3) == 1 ? 1 : -1) * (1 - r));
         }
 
@@ -209,16 +217,17 @@ namespace Pong_Game
             spriteBatch.Draw(texture, new Rectangle(location.ToPoint(), size), color);
         }
 
+        // Move the ball
         public void Move(float elapsedTime)
         {
+            // Move the ball according to the direction, speed and time
             location += direction * speed * elapsedTime;
 
-            int xborder = gDevice.Viewport.Width - size.X;
-            int yborder = gDevice.Viewport.Height - size.Y;
+            // Make sure the ball doesn't go out of bounds, when it hits the left or right side of the screen, take a live.
+            if (location.X > (gDevice.Viewport.Width - size.X) || location.X < 0)
+                direction.X *= -1; // Should take a live from a player
 
-            if (location.X > xborder || location.X < 0)
-                direction.X *= -1; // Should end game
-            if (location.Y > yborder || location.Y < 0)
+            if (location.Y > (gDevice.Viewport.Height - size.Y) || location.Y < 0)
                 direction.Y *= -1;
         }
     }
