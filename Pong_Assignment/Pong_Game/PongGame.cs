@@ -90,8 +90,6 @@ namespace Pong_Game
             players = _players.ToArray();
 
             ball = new Ball(Content.Load<Texture2D>("ball"), GraphicsDevice, spriteBatch);
-
-      
         }
 
         /// <summary>
@@ -130,6 +128,21 @@ namespace Pong_Game
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 players[1].Move(true);
 
+            if (Keyboard.GetState().IsKeyDown(Keys.C) && fourPlayers)
+                players[2].Move(false);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.F) && fourPlayers)
+                players[2].Move(true);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.OemQuestion) && fourPlayers)
+                players[3].Move(false);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.OemQuotes) && fourPlayers)
+                players[3].Move(true);
+
+            // Move ball
+            ball.Move((float)gameTime.ElapsedGameTime.TotalSeconds);
+
             // Execute MonoGame base Update method
             base.Update(gameTime);
         }
@@ -157,31 +170,56 @@ namespace Pong_Game
 
             // Execute MonoGame base draw method
             base.Draw(gameTime);
-
         }
     }
 
+    // Ball class
     public class Ball
     {
-        private const int speed = 5;
-        public Point location;
-        private readonly Point size = new Point(18, 18);
-        public Color color = Color.White;
-        private GraphicsDevice gDevice;
-        private SpriteBatch spriteBatch;
-        private Texture2D texture;
+        private const float speed = 700;                        // Variable to store speed of the ball
+        public Vector2 location;                                // Variable to store location of the ball
+        private readonly Point size = new Point(18, 18);        // Variable to store size of the ball
+        public Color color = Color.White;                       // Variable to store color of the ball
+        private GraphicsDevice gDevice;                         // Variable to store graphics device from monogame (used for boundaries)
+        private SpriteBatch spriteBatch;                        // Variable to store sprite batch from monogame (used for drawing)
+        private Texture2D texture;                              // Variable to store the texture of the ball
+        private Vector2 direction;                              // Variable to store the direction of the ball
+        private Random random = new Random();                   // Variable used to create random numbers
+        private float minimumAngle = 0.4f;                      // Variable to store minimum angle of the start direction of the ball
 
+        // Constructor of the ball class
         public Ball(Texture2D texture, GraphicsDevice gDevice, SpriteBatch spriteBatch)
         {
             this.texture = texture;
             this.gDevice = gDevice;
             this.spriteBatch = spriteBatch;
-            location = new Point((gDevice.Viewport.Bounds.Width / 2) - (size.X / 2), (gDevice.Viewport.Bounds.Height / 2) - (size.Y / 2));
+
+            location = new Vector2((gDevice.Viewport.Bounds.Width / 2) - (size.X / 2), (gDevice.Viewport.Bounds.Height / 2) - (size.Y / 2));
+
+            float r = (float)random.NextDouble();
+            if (r < minimumAngle)
+                r = minimumAngle;
+
+            direction = new Vector2((random.Next(1, 3) == 1 ? 1 : -1) * r, (random.Next(1, 3) == 1 ? 1 : -1) * (1 - r));
         }
 
+        // Draw the ball
         public void Draw()
         {
-            spriteBatch.Draw(texture, new Rectangle(location, size), color);
+            spriteBatch.Draw(texture, new Rectangle(location.ToPoint(), size), color);
+        }
+
+        public void Move(float elapsedTime)
+        {
+            location += direction * speed * elapsedTime;
+
+            int xborder = gDevice.Viewport.Width - size.X;
+            int yborder = gDevice.Viewport.Height - size.Y;
+
+            if (location.X > xborder || location.X < 0)
+                direction.X *= -1; // Should end game
+            if (location.Y > yborder || location.Y < 0)
+                direction.Y *= -1;
         }
     }
 
@@ -189,7 +227,7 @@ namespace Pong_Game
     public class Player
     {
         public int lives = 3;                                   // Variable to store lives for player
-        private const int speed = 5;                            // Set speed of player (is for every player)
+        private const int speed = 10;                           // Set speed of player (is for every player)
         private readonly Point size = new Point(20, 80);        // Set size of player (is for every player, readonly to prevent accedental edits)
         public Point location;                                  // Variable to store player location
         private Texture2D texture;                              // Variable to store the texture of the player
