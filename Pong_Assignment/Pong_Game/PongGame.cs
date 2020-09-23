@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Pong_Game
 {
@@ -18,14 +19,16 @@ namespace Pong_Game
     /// </summary>
     public class PongGame : Game
     {
-        GraphicsDeviceManager graphics;             // Variable to store the MonoGame Graphics Device Manager
-        SpriteBatch spriteBatch;                    // Variable to store the MonoGame Sprite Batch
+        GraphicsDeviceManager graphics;                         // Variable to store the MonoGame Graphics Device Manager
+        SpriteBatch spriteBatch;                                // Variable to store the MonoGame Sprite Batch
 
-        private bool fourPlayers = false;           // Variable to determine if game should be played with four or two players
-        public Player[] players;                    // Array to store all players created
-        public Ball ball;                           // Variable to store ball in
+        public static bool fourPlayers = false;                 // Variable to determine if game should be played with four or two players
+        public Player[] players;                                // Array to store all players created
+        public Ball ball;                                       // Variable to store ball in
 
-        public Texture2D lifeTexture;               // Variable to store life texture in
+        public static Texture2D lifeTexture;                    // Variable to store life texture in
+
+        public static GameState gameState = GameState.Playing;  // Variable to store gamestate in 
 
         // Constructor of MonoGame game class
         public PongGame()
@@ -113,7 +116,7 @@ namespace Pong_Game
         {
             // TODO: Unload any non ContentManager content here
         }
-
+       
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -250,15 +253,17 @@ namespace Pong_Game
     // Player class
     public class Player
     {
-        public int lives = 3;                                   // Variable to store lives for player
-        private const int speed = 10;                           // Set speed of player (is for every player)
-        private readonly Point size = new Point(20, 80);        // Set size of player (is for every player, readonly to prevent accedental edits)
-        public Point location;                                  // Variable to store player location
-        private Texture2D texture;                              // Variable to store the texture of the player
-        public Color color;                                     // Variable to store the color of the player
-        private GraphicsDevice gDevice;                         // Variable to store the GrapicsDevice from game
-        private SpriteBatch spriteBatch;                        // Variable to store spriteBatch
-        public PlayField playField;                             // Variable to store playfield for player -> where is he allowed to play
+        public int lives = 3;                                           // Variable to store lives for player
+        private int livesTextureOffset = 5;                             // Offset for the space between the textures of the lives
+        private readonly Point lifeTextureSize = new Point(20, 20);     // Size of the life textures
+        private const int speed = 10;                                   // Set speed of player (is for every player)
+        public readonly Point size = new Point(20, 80);                 // Set size of player (is for every player, readonly to prevent accedental edits)
+        public Point location;                                          // Variable to store player location
+        private Texture2D texture;                                      // Variable to store the texture of the player
+        public Color color;                                             // Variable to store the color of the player
+        private GraphicsDevice gDevice;                                 // Variable to store the GrapicsDevice from game
+        private SpriteBatch spriteBatch;                                // Variable to store spriteBatch
+        public PlayField playField;                                     // Variable to store playfield for player -> where is he allowed to play
 
         // Constructor for the player class
         public Player(Color color, PlayField playField, GraphicsDevice gDevice, SpriteBatch spriteBatch)
@@ -330,22 +335,48 @@ namespace Pong_Game
             texture.SetData(data);
         }
 
-        // Draw player on the screen
+        // Draw player and lives on the screen
         public void Draw()
         {
+            // Draw the player
             spriteBatch.Draw(texture, new Rectangle(location, size), color);
+
+            // Draw the lives
+            // Variable to store the position of the lives
+            Point pos = new Point(0, 0);
+
+            if (playField == PlayField.Right || playField == PlayField.TopRight || playField == PlayField.BottomRight)
+                pos.X = gDevice.Viewport.Bounds.Width - (lives * (livesTextureOffset + lifeTextureSize.X)) - livesTextureOffset;
+
+            if (playField == PlayField.BottomRight || playField == PlayField.BottomLeft)
+                pos.Y = gDevice.Viewport.Bounds.Height - lifeTextureSize.Y;
+
+            for (int i = 0; i < lives; i++)
+            {
+                pos.X += livesTextureOffset;
+                spriteBatch.Draw(PongGame.lifeTexture, new Rectangle(pos, lifeTextureSize), Color.White);
+                pos.X += lifeTextureSize.X;
+            }
         }
 
-        // Draw lives on the screen
-        public void DrawLives()
-        {
-
-        }
-
-        // 
+        // Action when player fails to hit ball
         public void Die()
         {
+            // Remove life
             lives--;
+
+            // When player doesn't have any lives left, show game over screen, or in case of four players, let the remaining player play the whole half of the screen
+            if (lives <= 0)
+            {
+                if (PongGame.fourPlayers)
+                {
+                    // 
+                }else
+                {
+                    // Game over
+                    PongGame.gameState = GameState.GameOver;
+                }
+            }
         }
 
         // Move the player - Arg. moveUp to determine if player should move up or down
