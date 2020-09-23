@@ -21,9 +21,9 @@ namespace Pong_Game
         GraphicsDeviceManager graphics;             // Variable to store the MonoGame Graphics Device Manager
         SpriteBatch spriteBatch;                    // Variable to store the MonoGame Sprite Batch
 
-        private const int ballSpeed = 5;            // Variable to store the speed of the ball
         private bool fourPlayers = false;           // Variable to determine if game should be played with four or two players
         Player[] players;                           // Array to store all players created
+        Ball ball;
 
         // Constructor of MonoGame game class
         public PongGame()
@@ -88,6 +88,8 @@ namespace Pong_Game
             
             // Convert the player list to an array and store it (arrays are faster and use less memory)
             players = _players.ToArray();
+
+            ball = new Ball(Content.Load<Texture2D>("ball"), GraphicsDevice, spriteBatch);
         }
 
         /// <summary>
@@ -126,6 +128,25 @@ namespace Pong_Game
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 players[1].Move(true);
 
+            // When C key is pressed (only execute when playing with 4 players)
+            if (Keyboard.GetState().IsKeyDown(Keys.C) && fourPlayers)
+                players[2].Move(false);
+
+            // When F key is pressed (only execute when playing with 4 players)
+            if (Keyboard.GetState().IsKeyDown(Keys.F) && fourPlayers)
+                players[2].Move(true);
+
+            // When ? key is pressed (only execute when playing with 4 players)
+            if (Keyboard.GetState().IsKeyDown(Keys.OemQuestion) && fourPlayers)
+                players[3].Move(false);
+
+            // When ' key is pressed (only execute when playing with 4 players)
+            if (Keyboard.GetState().IsKeyDown(Keys.OemQuotes) && fourPlayers)
+                players[3].Move(true);
+
+            // Move ball
+            ball.Move((float)gameTime.ElapsedGameTime.TotalSeconds);
+
             // Execute MonoGame base Update method
             base.Update(gameTime);
         }
@@ -146,6 +167,9 @@ namespace Pong_Game
             foreach (Player p in players)
                 p.Draw();
 
+            // Draw the ball
+            ball.Draw();
+
             // End the spritebatch
             spriteBatch.End();
 
@@ -154,15 +178,69 @@ namespace Pong_Game
         }
     }
 
+    // Ball class
+    public class Ball
+    {
+        private const float speed = 700;                        // Variable to store speed of the ball
+        public Vector2 location;                                // Variable to store location of the ball
+        private readonly Point size = new Point(18, 18);        // Variable to store size of the ball
+        public Color color = Color.White;                       // Variable to store color of the ball
+        private GraphicsDevice gDevice;                         // Variable to store graphics device from monogame (used for boundaries)
+        private SpriteBatch spriteBatch;                        // Variable to store sprite batch from monogame (used for drawing)
+        private Texture2D texture;                              // Variable to store the texture of the ball
+        private Vector2 direction;                              // Variable to store the direction of the ball
+        private Random random = new Random();                   // Variable used to create random numbers
+        private float minimumAngle = 0.4f;                      // Variable to store minimum angle of the start direction of the ball
+
+        // Constructor of the ball class
+        public Ball(Texture2D texture, GraphicsDevice gDevice, SpriteBatch spriteBatch)
+        {
+            this.texture = texture;             // Copy the given texture value to the local texture variable
+            this.gDevice = gDevice;             // Save the GraphicsDevice in a local variable
+            this.spriteBatch = spriteBatch;     // Save the Sprite Batch in a local variable
+
+            // Position the ball in the middle of the screen
+            location = new Vector2((gDevice.Viewport.Bounds.Width / 2) - (size.X / 2), (gDevice.Viewport.Bounds.Height / 2) - (size.Y / 2));
+
+            // Get a random angle and make sure it is above the minimum angle
+            float r = (float)random.NextDouble();
+            if (r < minimumAngle)
+                r = minimumAngle;
+
+            // Set the direction according to the angle
+            direction = new Vector2((random.Next(1, 3) == 1 ? 1 : -1) * r, (random.Next(1, 3) == 1 ? 1 : -1) * (1 - r));
+        }
+
+        // Draw the ball
+        public void Draw()
+        {
+            spriteBatch.Draw(texture, new Rectangle(location.ToPoint(), size), color);
+        }
+
+        // Move the ball
+        public void Move(float elapsedTime)
+        {
+            // Move the ball according to the direction, speed and time
+            location += direction * speed * elapsedTime;
+
+            // Make sure the ball doesn't go out of bounds, when it hits the left or right side of the screen, take a live.
+            if (location.X > (gDevice.Viewport.Width - size.X) || location.X < 0)
+                direction.X *= -1; // Should take a live from a player
+
+            if (location.Y > (gDevice.Viewport.Height - size.Y) || location.Y < 0)
+                direction.Y *= -1;
+        }
+    }
+
     // Player class
     public class Player
     {
         public int lives = 3;                                   // Variable to store lives for player
-        private const int speed = 5;                            // Set speed of player (is for every player)
+        private const int speed = 10;                           // Set speed of player (is for every player)
         private readonly Point size = new Point(20, 80);        // Set size of player (is for every player, readonly to prevent accedental edits)
         public Point location;                                  // Variable to store player location
         private Texture2D texture;                              // Variable to store the texture of the player
-        private Color color;                                    // Variable to store the color of the player
+        public Color color;                                     // Variable to store the color of the player
         private GraphicsDevice gDevice;                         // Variable to store the GrapicsDevice from game
         private SpriteBatch spriteBatch;                        // Variable to store spriteBatch
         public PlayField playField;                             // Variable to store playfield for player -> where is he allowed to play
