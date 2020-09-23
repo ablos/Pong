@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 namespace Pong_Game
@@ -22,11 +23,12 @@ namespace Pong_Game
         GraphicsDeviceManager graphics;                         // Variable to store the MonoGame Graphics Device Manager
         SpriteBatch spriteBatch;                                // Variable to store the MonoGame Sprite Batch
 
-        public static bool fourPlayers = false;                 // Variable to determine if game should be played with four or two players
+        public static bool fourPlayers;                         // Variable to determine if game should be played with four or two players
         public static Player[] players;                         // Array to store all players created
         public Ball ball;                                       // Variable to store ball in
 
         public static Texture2D lifeTexture;                    // Variable to store life texture in
+        private Texture2D ballTexture;                          // Variable to store ball texture in
 
         public static GameState gameState = GameState.Playing;  // Variable to store gamestate in 
 
@@ -71,7 +73,157 @@ namespace Pong_Game
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // Load the life texture
             lifeTexture = Content.Load<Texture2D>("life");
+
+            // Load the ball texture
+            ballTexture = Content.Load<Texture2D>("ball");
+
+            // Create players
+            CreatePlayers(false);
+
+            // Create the ball
+            ball = new Ball(ballTexture, GraphicsDevice, spriteBatch);
+        }
+
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// game-specific content.
+        /// </summary>
+        protected override void UnloadContent()
+        {
+            // TODO: Unload any non ContentManager content here
+        }
+       
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Update(GameTime gameTime)
+        {
+            // Exit game when escape is pressed
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            // Only execute this code when game is running
+            if (gameState == GameState.Playing)
+            {
+                // Check if playing with four or two players
+                if (!fourPlayers)
+                {
+                    // When playing with two players
+
+                    // When key S is pressed
+                    if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        players[0].Move(false);
+                    // When key W is pressed
+                    else if (Keyboard.GetState().IsKeyDown(Keys.W))
+                        players[0].Move(true);
+
+                    // When arrow down is pressed
+                    if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                        players[1].Move(false);
+                    // When arrow up is pressed
+                    else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                        players[1].Move(true);
+                }
+                else
+                {
+                    // When playing with four players
+
+                    // Loop trough all players
+                    foreach (Player p in players)
+                    {
+                        // Key checks for top left player
+                        if (p.playField == PlayField.TopLeft || p.playField == PlayField.Left)
+                        {
+                            // When S key is pressed
+                            if (Keyboard.GetState().IsKeyDown(Keys.S))
+                                p.Move(false);
+                            // When W key is pressed
+                            else if (Keyboard.GetState().IsKeyDown(Keys.W))
+                                p.Move(true);
+                        }
+
+                        // Key checks for bottom left player
+                        if (p.playField == PlayField.BottomLeft || p.playField == PlayField.Left)
+                        {
+                            // When C key is pressed
+                            if (Keyboard.GetState().IsKeyDown(Keys.C))
+                                p.Move(false);
+                            // When F key is pressed
+                            else if (Keyboard.GetState().IsKeyDown(Keys.F))
+                                p.Move(true);
+                        }
+
+                        // Key checks for top right player
+                        if (p.playField == PlayField.TopRight || p.playField == PlayField.Right)
+                        {
+                            // When arrow down key is pressed
+                            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                                p.Move(false);
+                            // When arrow up key is pressed
+                            else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                                p.Move(true);
+                        }
+
+                        // Key checks for bottom right player
+                        if (p.playField == PlayField.BottomRight || p.playField == PlayField.Right)
+                        {
+                            // When ? key is pressed
+                            if (Keyboard.GetState().IsKeyDown(Keys.OemQuestion))
+                                p.Move(false);
+                            // When ' key is pressed
+                            else if (Keyboard.GetState().IsKeyDown(Keys.OemQuotes))
+                                p.Move(true);
+                        }
+                    }
+                }
+
+                // Move ball
+                ball.Move((float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+
+            // Execute MonoGame base Update method
+            base.Update(gameTime);
+        }
+
+        /// <summary>
+        /// This is called when the game should draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Draw(GameTime gameTime)
+        {
+            // Set background of screen
+            GraphicsDevice.Clear(Color.Black);
+
+            // Start the spriteBatch to allow drawing
+            spriteBatch.Begin();
+
+            // Only execute this code when game is running
+            if (gameState == GameState.Playing)
+            {
+                // Draw all players
+                foreach (Player p in players)
+                    p.Draw();
+
+                // Draw the ball
+                ball.Draw();
+            }
+
+            // End the spritebatch
+            spriteBatch.End();
+
+            // Execute MonoGame base draw method
+            base.Draw(gameTime);
+        }
+
+        // Create players
+        private void CreatePlayers(bool _fourPlayers)
+        {
+            // Store the bool in the class variable
+            fourPlayers = _fourPlayers;
 
             // Create player list to store all created players (using list for easy adding without setting a size first)
             List<Player> _players = new List<Player>();
@@ -101,96 +253,9 @@ namespace Pong_Game
                 _players.Add(playerThree);
                 _players.Add(playerFour);
             }
-            
+
             // Convert the player list to an array and store it (arrays are faster and use less memory)
             players = _players.ToArray();
-
-            ball = new Ball(Content.Load<Texture2D>("ball"), GraphicsDevice, spriteBatch);
-        }
-
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
-        protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
-        }
-       
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
-        {
-            // Exit game when escape is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            // When key S is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                players[0].Move(false);
-            
-            // When key W is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-                players[0].Move(true);
-
-            // When arrow down is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                players[1].Move(false);
-
-            // When arrow up is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                players[1].Move(true);
-
-            // When C key is pressed (only execute when playing with 4 players)
-            if (Keyboard.GetState().IsKeyDown(Keys.C) && fourPlayers)
-                players[2].Move(false);
-
-            // When F key is pressed (only execute when playing with 4 players)
-            if (Keyboard.GetState().IsKeyDown(Keys.F) && fourPlayers)
-                players[2].Move(true);
-
-            // When ? key is pressed (only execute when playing with 4 players)
-            if (Keyboard.GetState().IsKeyDown(Keys.OemQuestion) && fourPlayers)
-                players[3].Move(false);
-
-            // When ' key is pressed (only execute when playing with 4 players)
-            if (Keyboard.GetState().IsKeyDown(Keys.OemQuotes) && fourPlayers)
-                players[3].Move(true);
-
-            // Move ball
-            ball.Move((float)gameTime.ElapsedGameTime.TotalSeconds);
-
-            // Execute MonoGame base Update method
-            base.Update(gameTime);
-        }
-
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
-        {
-            // Set background of screen
-            GraphicsDevice.Clear(Color.Black);
-
-            // Start the spriteBatch to allow drawing
-            spriteBatch.Begin();
-
-            // Draw all players
-            foreach (Player p in players)
-                p.Draw();
-
-            // Draw the ball
-            ball.Draw();
-
-            // End the spritebatch
-            spriteBatch.End();
-
-            // Execute MonoGame base draw method
-            base.Draw(gameTime);
         }
     }
 
@@ -380,12 +445,15 @@ namespace Pong_Game
             // Variable to store the position of the lives
             Point pos = new Point(0, 0);
 
+            // Determine the X position of the lives for players on the right side of the screen
             if (playField == PlayField.Right || playField == PlayField.TopRight || playField == PlayField.BottomRight)
                 pos.X = gDevice.Viewport.Bounds.Width - (lives * (livesTextureOffset + lifeTextureSize.X)) - livesTextureOffset;
 
+            // Determine the Y position of the lives for the players on the bottom side of the screen
             if (playField == PlayField.BottomRight || playField == PlayField.BottomLeft)
                 pos.Y = gDevice.Viewport.Bounds.Height - lifeTextureSize.Y;
 
+            // Draw all the lives
             for (int i = 0; i < lives; i++)
             {
                 pos.X += livesTextureOffset;
@@ -405,7 +473,59 @@ namespace Pong_Game
             {
                 if (PongGame.fourPlayers)
                 {
-                    // 
+                    // Remove one player from the field, unless all players from one half are dead
+                    bool hasTeammate = false;
+                    foreach (Player p in PongGame.players)
+                    {
+                        // Try to find a teammate, if one is found, edit the playfield for this player
+                        switch (playField)
+                        {
+                            case PlayField.TopLeft:
+                                if (p.playField == PlayField.BottomLeft && p.lives > 0)
+                                {
+                                    p.playField = PlayField.Left;
+                                    hasTeammate = true;
+                                }
+                                break;
+                            case PlayField.BottomLeft:
+                                if (p.playField == PlayField.TopLeft && p.lives > 0)
+                                {
+                                    p.playField = PlayField.Left;
+                                    hasTeammate = true;
+                                }
+                                break;
+                            case PlayField.TopRight:
+                                if (p.playField == PlayField.BottomRight && p.lives > 0)
+                                {
+                                    p.playField = PlayField.Right;
+                                    hasTeammate = true;
+                                }
+                                break;
+                            case PlayField.BottomRight:
+                                if (p.playField == PlayField.TopRight && p.lives > 0)
+                                {
+                                    p.playField = PlayField.Right;
+                                    hasTeammate = true;
+                                }
+                                break;
+                        }
+
+                        // If a teammate was found, break out of the loop
+                        if (hasTeammate)
+                            break;
+                    }
+
+                    // If there is no teammate: game over
+                    if (!hasTeammate)
+                    {
+                        PongGame.gameState = GameState.GameOver;
+                        return;
+                    }
+
+                    // If there is a teammate, remove this player from game
+                    List<Player> players = PongGame.players.ToList();
+                    players.Remove(this);
+                    PongGame.players = players.ToArray();
                 }else
                 {
                     // Game over
