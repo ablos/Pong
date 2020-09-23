@@ -22,8 +22,10 @@ namespace Pong_Game
         SpriteBatch spriteBatch;                    // Variable to store the MonoGame Sprite Batch
 
         private bool fourPlayers = false;           // Variable to determine if game should be played with four or two players
-        Player[] players;                           // Array to store all players created
-        Ball ball;
+        public Player[] players;                    // Array to store all players created
+        public Ball ball;                           // Variable to store ball in
+
+        public Texture2D lifeTexture;               // Variable to store life texture in
 
         // Constructor of MonoGame game class
         public PongGame()
@@ -34,6 +36,15 @@ namespace Pong_Game
 
             // Set window name
             this.Window.Title = "Pong";
+        }
+
+        // Main function, this function is called when the program is started
+        [STAThread]
+        static void Main()
+        {
+            // Run the pong game
+            using (var game = new PongGame())
+                game.Run();
         }
 
         /// <summary>
@@ -56,6 +67,8 @@ namespace Pong_Game
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            lifeTexture = Content.Load<Texture2D>("life");
 
             // Create player list to store all created players (using list for easy adding without setting a size first)
             List<Player> _players = new List<Player>();
@@ -229,6 +242,8 @@ namespace Pong_Game
 
             if (location.Y > (gDevice.Viewport.Height - size.Y) || location.Y < 0)
                 direction.Y *= -1;
+
+
         }
     }
 
@@ -319,6 +334,18 @@ namespace Pong_Game
         public void Draw()
         {
             spriteBatch.Draw(texture, new Rectangle(location, size), color);
+        }
+
+        // Draw lives on the screen
+        public void DrawLives()
+        {
+
+        }
+
+        // 
+        public void Die()
+        {
+            lives--;
         }
 
         // Move the player - Arg. moveUp to determine if player should move up or down
