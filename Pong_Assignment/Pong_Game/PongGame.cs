@@ -325,22 +325,22 @@ namespace Pong_Game
                     {
                         direction.Y = -1;
                     }
-                    else if ((p.location.Y + p.size.Y / 5) < ((int)location.Y + size.Y / 2)
+                    else if (((int)location.Y + size.Y / 2) > (p.location.Y + p.size.Y / 5)
                         && ((int)location.Y + size.Y / 2) >= 2 * (p.location.Y + p.size.Y / 5))
                     {
                         direction.Y = -0.5f;
                     }
-                    else if (2 * (p.location.Y + p.size.Y / 5) < ((int)location.Y + size.Y / 2)
+                    else if (((int)location.Y + size.Y / 2) > 2 * (p.location.Y + p.size.Y / 5)
                         && ((int)location.Y + size.Y / 2) >= 3 * (p.location.Y + p.size.Y / 5))
                     {
                         direction.Y = 0;
                     }
-                    else if (3 * (p.location.Y + p.size.Y / 5) < ((int)location.Y + size.Y / 2)
+                    else if (((int)location.Y + size.Y / 2) > 3 * (p.location.Y + p.size.Y / 5)
                         && ((int)location.Y + size.Y / 2) >= 4 * (p.location.Y + p.size.Y / 5))
                     {
                         direction.Y = 0.5f;
                     }
-                    else if (4 * (p.location.Y + p.size.Y / 5) < ((int)location.Y + size.Y / 2)
+                    else if (((int)location.Y + size.Y / 2) > 4 * (p.location.Y + p.size.Y / 5)
                         && ((int)location.Y + size.Y / 2) >= (p.location.Y + p.size.Y / 5))
                     {
                         direction.Y = 1;
