@@ -80,7 +80,7 @@ namespace Pong_Game
             ballTexture = Content.Load<Texture2D>("ball");
 
             // Create players
-            CreatePlayers(true);
+            CreatePlayers(false);
 
             // Create the ball
             ball = new Ball(ballTexture, GraphicsDevice, spriteBatch);
@@ -443,7 +443,7 @@ namespace Pong_Game
 
             // Draw the lives
             // Variable to store the position of the lives
-            Point pos = new Point(0, 0);
+            Point pos = new Point(0, livesTextureOffset);
 
             // Determine the X position of the lives for players on the right side of the screen
             if (playField == PlayField.Right || playField == PlayField.TopRight || playField == PlayField.BottomRight)
@@ -451,7 +451,7 @@ namespace Pong_Game
 
             // Determine the Y position of the lives for the players on the bottom side of the screen
             if (playField == PlayField.BottomRight || playField == PlayField.BottomLeft)
-                pos.Y = gDevice.Viewport.Bounds.Height - lifeTextureSize.Y;
+                pos.Y = gDevice.Viewport.Bounds.Height - lifeTextureSize.Y - livesTextureOffset;
 
             // Draw all the lives
             for (int i = 0; i < lives; i++)
