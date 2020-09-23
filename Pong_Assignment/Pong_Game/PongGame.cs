@@ -80,7 +80,7 @@ namespace Pong_Game
             ballTexture = Content.Load<Texture2D>("ball");
 
             // Create players
-            CreatePlayers(false);
+            CreatePlayers(true);
 
             // Create the ball
             ball = new Ball(ballTexture, GraphicsDevice, spriteBatch);
@@ -94,7 +94,7 @@ namespace Pong_Game
         {
             // TODO: Unload any non ContentManager content here
         }
-       
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
