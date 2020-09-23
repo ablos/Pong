@@ -22,7 +22,7 @@ namespace Pong_Game
         SpriteBatch spriteBatch;                    // Variable to store the MonoGame Sprite Batch
 
         private bool fourPlayers = false;           // Variable to determine if game should be played with four or two players
-        public Player[] players;                    // Array to store all players created
+        public static Player[] players;             // Array to store all players created
         public Ball ball;                           // Variable to store ball in
 
         public Texture2D lifeTexture;               // Variable to store life texture in
@@ -222,6 +222,8 @@ namespace Pong_Game
 
             // Set the direction according to the angle
             direction = new Vector2((random.Next(1, 3) == 1 ? 1 : -1) * r, (random.Next(1, 3) == 1 ? 1 : -1) * (1 - r));
+
+
         }
 
         // Draw the ball
@@ -243,7 +245,42 @@ namespace Pong_Game
             if (location.Y > (gDevice.Viewport.Height - size.Y) || location.Y < 0)
                 direction.Y *= -1;
 
+            Rectangle ballRect = new Rectangle((int)location.X, (int)location.Y, size.X, size.Y);
+            foreach (Player p in PongGame.players)
+            {
+                Rectangle playerRect = new Rectangle(p.location.X, p.location.Y, p.size.X, p.size.Y);
 
+                if (playerRect.Intersects(ballRect))
+                {
+                    // direction x
+                    direction.X *= -1;
+
+                    if (((int)location.Y + size.Y / 2) >= (p.location.Y + p.size.Y / 5))
+                    {
+                        direction.Y = -1;
+                    }
+                    else if ((p.location.Y + p.size.Y / 5) < ((int)location.Y + size.Y / 2)
+                        && ((int)location.Y + size.Y / 2) >= 2 * (p.location.Y + p.size.Y / 5))
+                    {
+                        direction.Y = -0.5f;
+                    }
+                    else if (2 * (p.location.Y + p.size.Y / 5) < ((int)location.Y + size.Y / 2)
+                        && ((int)location.Y + size.Y / 2) >= 3 * (p.location.Y + p.size.Y / 5))
+                    {
+                        direction.Y = 0;
+                    }
+                    else if (3 * (p.location.Y + p.size.Y / 5) < ((int)location.Y + size.Y / 2)
+                        && ((int)location.Y + size.Y / 2) >= 4 * (p.location.Y + p.size.Y / 5))
+                    {
+                        direction.Y = 0.5f;
+                    }
+                    else if (4 * (p.location.Y + p.size.Y / 5) < ((int)location.Y + size.Y / 2)
+                        && ((int)location.Y + size.Y / 2) >= (p.location.Y + p.size.Y / 5))
+                    {
+                        direction.Y = 1;
+                    }
+                }
+            }
         }
     }
 
@@ -252,7 +289,7 @@ namespace Pong_Game
     {
         public int lives = 3;                                   // Variable to store lives for player
         private const int speed = 10;                           // Set speed of player (is for every player)
-        private readonly Point size = new Point(20, 80);        // Set size of player (is for every player, readonly to prevent accedental edits)
+        public readonly Point size = new Point(20, 160);         // Set size of player (is for every player, readonly to prevent accedental edits)
         public Point location;                                  // Variable to store player location
         private Texture2D texture;                              // Variable to store the texture of the player
         public Color color;                                     // Variable to store the color of the player
