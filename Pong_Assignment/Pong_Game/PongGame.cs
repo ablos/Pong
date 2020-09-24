@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 
 namespace Pong_Game
 {
@@ -18,12 +20,17 @@ namespace Pong_Game
     /// </summary>
     public class PongGame : Game
     {
-        GraphicsDeviceManager graphics;             // Variable to store the MonoGame Graphics Device Manager
-        SpriteBatch spriteBatch;                    // Variable to store the MonoGame Sprite Batch
+        GraphicsDeviceManager graphics;                         // Variable to store the MonoGame Graphics Device Manager
+        SpriteBatch spriteBatch;                                // Variable to store the MonoGame Sprite Batch
 
-        private bool fourPlayers = false;           // Variable to determine if game should be played with four or two players
-        Player[] players;                           // Array to store all players created
-        Ball ball;
+        public static bool fourPlayers;                         // Variable to determine if game should be played with four or two players
+        public static Player[] players;                         // Array to store all players created
+        public Ball ball;                                       // Variable to store ball in
+
+        public static Texture2D lifeTexture;                    // Variable to store life texture in
+        private Texture2D ballTexture;                          // Variable to store ball texture in
+
+        public static GameState gameState = GameState.Playing;  // Variable to store gamestate in 
 
         // Constructor of MonoGame game class
         public PongGame()
@@ -34,6 +41,15 @@ namespace Pong_Game
 
             // Set window name
             this.Window.Title = "Pong";
+        }
+
+        // Main function, this function is called when the program is started
+        [STAThread]
+        static void Main()
+        {
+            // Run the pong game
+            using (var game = new PongGame())
+                game.Run();
         }
 
         /// <summary>
@@ -56,6 +72,158 @@ namespace Pong_Game
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            // Load the life texture
+            lifeTexture = Content.Load<Texture2D>("life");
+
+            // Load the ball texture
+            ballTexture = Content.Load<Texture2D>("ball");
+
+            // Create players
+            CreatePlayers(false);
+
+            // Create the ball
+            ball = new Ball(ballTexture, GraphicsDevice, spriteBatch);
+        }
+
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// game-specific content.
+        /// </summary>
+        protected override void UnloadContent()
+        {
+            // TODO: Unload any non ContentManager content here
+        }
+
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Update(GameTime gameTime)
+        {
+            // Exit game when escape is pressed
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            // Only execute this code when game is running
+            if (gameState == GameState.Playing)
+            {
+                // Check if playing with four or two players
+                if (!fourPlayers)
+                {
+                    // When playing with two players
+
+                    // When key S is pressed
+                    if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        players[0].Move(false);
+                    // When key W is pressed
+                    else if (Keyboard.GetState().IsKeyDown(Keys.W))
+                        players[0].Move(true);
+
+                    // When arrow down is pressed
+                    if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                        players[1].Move(false);
+                    // When arrow up is pressed
+                    else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                        players[1].Move(true);
+                }
+                else
+                {
+                    // When playing with four players
+
+                    // Loop trough all players
+                    foreach (Player p in players)
+                    {
+                        // Key checks for top left player
+                        if (p.playField == PlayField.TopLeft || p.playField == PlayField.Left)
+                        {
+                            // When S key is pressed
+                            if (Keyboard.GetState().IsKeyDown(Keys.S))
+                                p.Move(false);
+                            // When W key is pressed
+                            else if (Keyboard.GetState().IsKeyDown(Keys.W))
+                                p.Move(true);
+                        }
+
+                        // Key checks for bottom left player
+                        if (p.playField == PlayField.BottomLeft || p.playField == PlayField.Left)
+                        {
+                            // When C key is pressed
+                            if (Keyboard.GetState().IsKeyDown(Keys.C))
+                                p.Move(false);
+                            // When F key is pressed
+                            else if (Keyboard.GetState().IsKeyDown(Keys.F))
+                                p.Move(true);
+                        }
+
+                        // Key checks for top right player
+                        if (p.playField == PlayField.TopRight || p.playField == PlayField.Right)
+                        {
+                            // When arrow down key is pressed
+                            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                                p.Move(false);
+                            // When arrow up key is pressed
+                            else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                                p.Move(true);
+                        }
+
+                        // Key checks for bottom right player
+                        if (p.playField == PlayField.BottomRight || p.playField == PlayField.Right)
+                        {
+                            // When ? key is pressed
+                            if (Keyboard.GetState().IsKeyDown(Keys.OemQuestion))
+                                p.Move(false);
+                            // When ' key is pressed
+                            else if (Keyboard.GetState().IsKeyDown(Keys.OemQuotes))
+                                p.Move(true);
+                        }
+                    }
+                }
+
+                // Move ball
+                ball.Move((float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+
+            // Execute MonoGame base Update method
+            base.Update(gameTime);
+        }
+
+        /// <summary>
+        /// This is called when the game should draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Draw(GameTime gameTime)
+        {
+            // Set background of screen
+            GraphicsDevice.Clear(Color.Black);
+
+            // Start the spriteBatch to allow drawing
+            spriteBatch.Begin();
+
+            // Only execute this code when game is running
+            if (gameState == GameState.Playing)
+            {
+                // Draw all players
+                foreach (Player p in players)
+                    p.Draw();
+
+                // Draw the ball
+                ball.Draw();
+            }
+
+            // End the spritebatch
+            spriteBatch.End();
+
+            // Execute MonoGame base draw method
+            base.Draw(gameTime);
+        }
+
+        // Create players
+        private void CreatePlayers(bool _fourPlayers)
+        {
+            // Store the bool in the class variable
+            fourPlayers = _fourPlayers;
 
             // Create player list to store all created players (using list for easy adding without setting a size first)
             List<Player> _players = new List<Player>();
@@ -85,118 +253,117 @@ namespace Pong_Game
                 _players.Add(playerThree);
                 _players.Add(playerFour);
             }
-            
+
             // Convert the player list to an array and store it (arrays are faster and use less memory)
             players = _players.ToArray();
-
-            ball = new Ball(Content.Load<Texture2D>("ball"), GraphicsDevice, spriteBatch);
-
-      
-        }
-
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
-        protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
-        }
-
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
-        {
-            // Exit game when escape is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            // When key S is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                players[0].Move(false);
-            
-            // When key W is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-                players[0].Move(true);
-
-            // When arrow down is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                players[1].Move(false);
-
-            // When arrow up is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                players[1].Move(true);
-
-            // Execute MonoGame base Update method
-            base.Update(gameTime);
-        }
-
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
-        {
-            // Set background of screen
-            GraphicsDevice.Clear(Color.Black);
-
-            // Start the spriteBatch to allow drawing
-            spriteBatch.Begin();
-
-            // Draw all players
-            foreach (Player p in players)
-                p.Draw();
-
-            ball.Draw();
-
-            // End the spritebatch
-            spriteBatch.End();
-
-            // Execute MonoGame base draw method
-            base.Draw(gameTime);
-
         }
     }
 
+    // Ball class
     public class Ball
     {
-        private const int speed = 5;
-        public Point location;
-        private readonly Point size = new Point(18, 18);
-        public Color color = Color.White;
-        private GraphicsDevice gDevice;
-        private SpriteBatch spriteBatch;
-        private Texture2D texture;
+        private const float speed = 700;                        // Variable to store speed of the ball
+        public Vector2 location;                                // Variable to store location of the ball
+        private readonly Point size = new Point(18, 18);        // Variable to store size of the ball
+        public Color color = Color.White;                       // Variable to store color of the ball
+        private GraphicsDevice gDevice;                         // Variable to store graphics device from monogame (used for boundaries)
+        private SpriteBatch spriteBatch;                        // Variable to store sprite batch from monogame (used for drawing)
+        private Texture2D texture;                              // Variable to store the texture of the ball
+        private Vector2 direction;                              // Variable to store the direction of the ball
+        private Random random = new Random();                   // Variable used to create random numbers
+        private float minimumAngle = 0.4f;                      // Variable to store minimum angle of the start direction of the ball
 
+        // Constructor of the ball class
         public Ball(Texture2D texture, GraphicsDevice gDevice, SpriteBatch spriteBatch)
         {
-            this.texture = texture;
-            this.gDevice = gDevice;
-            this.spriteBatch = spriteBatch;
-            location = new Point((gDevice.Viewport.Bounds.Width / 2) - (size.X / 2), (gDevice.Viewport.Bounds.Height / 2) - (size.Y / 2));
+            this.texture = texture;             // Copy the given texture value to the local texture variable
+            this.gDevice = gDevice;             // Save the GraphicsDevice in a local variable
+            this.spriteBatch = spriteBatch;     // Save the Sprite Batch in a local variable
+
+            // Position the ball in the middle of the screen
+            location = new Vector2((gDevice.Viewport.Bounds.Width / 2) - (size.X / 2), (gDevice.Viewport.Bounds.Height / 2) - (size.Y / 2));
+
+            // Get a random angle and make sure it is above the minimum angle
+            float r = (float)random.NextDouble();
+            if (r < minimumAngle)
+                r = minimumAngle;
+
+            // Set the direction according to the angle
+            direction = new Vector2((random.Next(1, 3) == 1 ? 1 : -1) * r, (random.Next(1, 3) == 1 ? 1 : -1) * (1 - r));
         }
 
+        // Draw the ball
         public void Draw()
         {
-            spriteBatch.Draw(texture, new Rectangle(location, size), color);
+            spriteBatch.Draw(texture, new Rectangle(location.ToPoint(), size), color);
+        }
+
+        // Move the ball
+        public void Move(float elapsedTime)
+        {
+            // Move the ball according to the direction, speed and time
+            location += direction * speed * elapsedTime;
+
+            // Make sure the ball doesn't go out of bounds, when it hits the left or right side of the screen, take a live.
+            if (location.X > (gDevice.Viewport.Width - size.X) || location.X < 0)
+                direction.X *= -1; // Should take a live from a player
+
+            if (location.Y > (gDevice.Viewport.Height - size.Y) || location.Y < 0)
+                direction.Y *= -1;
+
+            Rectangle ballRect = new Rectangle((int)location.X, (int)location.Y, size.X, size.Y);
+            foreach (Player p in PongGame.players)
+            {
+                Rectangle playerRect = new Rectangle(p.location.X, p.location.Y, p.size.X, p.size.Y);
+
+                if (playerRect.Intersects(ballRect))
+                {
+                    // direction x
+                    direction.X *= -1;
+
+                    if (((int)location.Y + size.Y / 2) >= (p.location.Y + p.size.Y / 5))
+                    {
+                        direction.Y = -1;
+                    }
+                    else if (((int)location.Y + size.Y / 2) > (p.location.Y + p.size.Y / 5)
+                        && ((int)location.Y + size.Y / 2) >= 2 * (p.location.Y + p.size.Y / 5))
+                    {
+                        direction.Y = -0.5f;
+                    }
+                    else if (((int)location.Y + size.Y / 2) > 2 * (p.location.Y + p.size.Y / 5)
+                        && ((int)location.Y + size.Y / 2) >= 3 * (p.location.Y + p.size.Y / 5))
+                    {
+                        direction.Y = 0;
+                    }
+                    else if (((int)location.Y + size.Y / 2) > 3 * (p.location.Y + p.size.Y / 5)
+                        && ((int)location.Y + size.Y / 2) >= 4 * (p.location.Y + p.size.Y / 5))
+                    {
+                        direction.Y = 0.5f;
+                    }
+                    else if (((int)location.Y + size.Y / 2) > 4 * (p.location.Y + p.size.Y / 5)
+                        && ((int)location.Y + size.Y / 2) >= (p.location.Y + p.size.Y / 5))
+                    {
+                        direction.Y = 1;
+                    }
+                }
+            }
         }
     }
 
     // Player class
     public class Player
     {
-        public int lives = 3;                                   // Variable to store lives for player
-        private const int speed = 5;                            // Set speed of player (is for every player)
-        private readonly Point size = new Point(20, 80);        // Set size of player (is for every player, readonly to prevent accedental edits)
-        public Point location;                                  // Variable to store player location
-        private Texture2D texture;                              // Variable to store the texture of the player
-        public Color color;                                     // Variable to store the color of the player
-        private GraphicsDevice gDevice;                         // Variable to store the GrapicsDevice from game
-        private SpriteBatch spriteBatch;                        // Variable to store spriteBatch
-        public PlayField playField;                             // Variable to store playfield for player -> where is he allowed to play
+        public int lives = 3;                                           // Variable to store lives for player
+        private int livesTextureOffset = 5;                             // Offset for the space between the textures of the lives
+        private readonly Point lifeTextureSize = new Point(20, 20);     // Size of the life textures
+        private const int speed = 10;                                   // Set speed of player (is for every player)
+        public readonly Point size = new Point(20, 80);                 // Set size of player (is for every player, readonly to prevent accedental edits)
+        public Point location;                                          // Variable to store player location
+        private Texture2D texture;                                      // Variable to store the texture of the player
+        public Color color;                                             // Variable to store the color of the player
+        private GraphicsDevice gDevice;                                 // Variable to store the GrapicsDevice from game
+        private SpriteBatch spriteBatch;                                // Variable to store spriteBatch
+        public PlayField playField;                                     // Variable to store playfield for player -> where is he allowed to play
 
         // Constructor for the player class
         public Player(Color color, PlayField playField, GraphicsDevice gDevice, SpriteBatch spriteBatch)
@@ -268,10 +435,103 @@ namespace Pong_Game
             texture.SetData(data);
         }
 
-        // Draw player on the screen
+        // Draw player and lives on the screen
         public void Draw()
         {
+            // Draw the player
             spriteBatch.Draw(texture, new Rectangle(location, size), color);
+
+            // Draw the lives
+            // Variable to store the position of the lives
+            Point pos = new Point(0, livesTextureOffset);
+
+            // Determine the X position of the lives for players on the right side of the screen
+            if (playField == PlayField.Right || playField == PlayField.TopRight || playField == PlayField.BottomRight)
+                pos.X = gDevice.Viewport.Bounds.Width - (lives * (livesTextureOffset + lifeTextureSize.X)) - livesTextureOffset;
+
+            // Determine the Y position of the lives for the players on the bottom side of the screen
+            if (playField == PlayField.BottomRight || playField == PlayField.BottomLeft)
+                pos.Y = gDevice.Viewport.Bounds.Height - lifeTextureSize.Y - livesTextureOffset;
+
+            // Draw all the lives
+            for (int i = 0; i < lives; i++)
+            {
+                pos.X += livesTextureOffset;
+                spriteBatch.Draw(PongGame.lifeTexture, new Rectangle(pos, lifeTextureSize), Color.White);
+                pos.X += lifeTextureSize.X;
+            }
+        }
+
+        // Action when player fails to hit ball
+        public void Die()
+        {
+            // Remove life
+            lives--;
+
+            // When player doesn't have any lives left, show game over screen, or in case of four players, let the remaining player play the whole half of the screen
+            if (lives <= 0)
+            {
+                if (PongGame.fourPlayers)
+                {
+                    // Remove one player from the field, unless all players from one half are dead
+                    bool hasTeammate = false;
+                    foreach (Player p in PongGame.players)
+                    {
+                        // Try to find a teammate, if one is found, edit the playfield for this player
+                        switch (playField)
+                        {
+                            case PlayField.TopLeft:
+                                if (p.playField == PlayField.BottomLeft && p.lives > 0)
+                                {
+                                    p.playField = PlayField.Left;
+                                    hasTeammate = true;
+                                }
+                                break;
+                            case PlayField.BottomLeft:
+                                if (p.playField == PlayField.TopLeft && p.lives > 0)
+                                {
+                                    p.playField = PlayField.Left;
+                                    hasTeammate = true;
+                                }
+                                break;
+                            case PlayField.TopRight:
+                                if (p.playField == PlayField.BottomRight && p.lives > 0)
+                                {
+                                    p.playField = PlayField.Right;
+                                    hasTeammate = true;
+                                }
+                                break;
+                            case PlayField.BottomRight:
+                                if (p.playField == PlayField.TopRight && p.lives > 0)
+                                {
+                                    p.playField = PlayField.Right;
+                                    hasTeammate = true;
+                                }
+                                break;
+                        }
+
+                        // If a teammate was found, break out of the loop
+                        if (hasTeammate)
+                            break;
+                    }
+
+                    // If there is no teammate: game over
+                    if (!hasTeammate)
+                    {
+                        PongGame.gameState = GameState.GameOver;
+                        return;
+                    }
+
+                    // If there is a teammate, remove this player from game
+                    List<Player> players = PongGame.players.ToList();
+                    players.Remove(this);
+                    PongGame.players = players.ToArray();
+                }else
+                {
+                    // Game over
+                    PongGame.gameState = GameState.GameOver;
+                }
+            }
         }
 
         // Move the player - Arg. moveUp to determine if player should move up or down
