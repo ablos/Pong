@@ -315,7 +315,7 @@ namespace Pong_Game
 
             // Set the direction according to the angle
             direction = new Vector2((random.Next(1, 3) == 1 ? 1 : -1) * r, (random.Next(1, 3) == 1 ? 1 : -1) * (1 - r));
-            if (direction.X == -1)
+            if (direction.X < 0)
                 allowBounceLeft = true;
             else
                 allowBounceRight = true;
@@ -384,25 +384,29 @@ namespace Pong_Game
 
                     if (((int)location.Y + size.Y / 2) <= (p.location.Y + p.size.Y / 5))
                     {
+                        Debug.WriteLine("Up");
                         direction.Y = -1;
                     }
                     else if (((int)location.Y + size.Y / 2) > (p.location.Y + p.size.Y / 5)
-                        && ((int)location.Y + size.Y / 2) <= (2 * (p.location.Y + p.size.Y / 5)))
+                        && ((int)location.Y + size.Y / 2) <= p.location.Y + 2 * p.size.Y / 5)
                     {
                         direction.Y = -0.5f;
                     }
-                    else if (((int)location.Y + size.Y / 2) > (2 * (p.location.Y + p.size.Y / 5))
-                        && ((int)location.Y + size.Y / 2) <= (3 * (p.location.Y + p.size.Y / 5)))
+                    else if (((int)location.Y + size.Y / 2) > p.location.Y + 2 * p.size.Y / 5
+                        && ((int)location.Y + size.Y / 2) <= p.location.Y + 3 * p.size.Y / 5)
                     {
+                        Debug.WriteLine("Straight");
                         direction.Y = 0;
                     }
-                    else if (((int)location.Y + size.Y / 2) > (3 * (p.location.Y + p.size.Y / 5))
-                        && ((int)location.Y + size.Y / 2) <= (4 * (p.location.Y + p.size.Y / 5)))
+                    else if (((int)location.Y + size.Y / 2) > p.location.Y + 3 * p.size.Y / 5
+                        && ((int)location.Y + size.Y / 2) <= p.location.Y + 4 * p.size.Y / 5)
                     {
+                        Debug.WriteLine("Half down");
                         direction.Y = 0.5f;
                     }
-                    else if (((int)location.Y + size.Y / 2) > (4 * (p.location.Y + p.size.Y / 5)))
+                    else if (((int)location.Y + size.Y / 2) > p.location.Y + 4 * p.size.Y / 5)
                     {
+                        Debug.WriteLine("Down");
                         direction.Y = 1;
                     }
                 }
