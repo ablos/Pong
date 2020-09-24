@@ -20,17 +20,19 @@ namespace Pong_Game
     /// </summary>
     public class PongGame : Game
     {
-        GraphicsDeviceManager graphics;                         // Variable to store the MonoGame Graphics Device Manager
-        SpriteBatch spriteBatch;                                // Variable to store the MonoGame Sprite Batch
+        GraphicsDeviceManager graphics;                  // Variable to store the MonoGame Graphics Device Manager
+        SpriteBatch spriteBatch;                         // Variable to store the MonoGame Sprite Batch
 
-        public static bool fourPlayers;                         // Variable to determine if game should be played with four or two players
-        public static Player[] players;                         // Array to store all players created
-        public Ball ball;                                       // Variable to store ball in
+        public bool fourPlayers;                         // Variable to determine if game should be played with four or two players
+        public Player[] players;                         // Array to store all players created
+        public Ball ball;                                // Variable to store ball in
 
-        public static Texture2D lifeTexture;                    // Variable to store life texture in
-        private Texture2D ballTexture;                          // Variable to store ball texture in
+        public Texture2D lifeTexture;                    // Variable to store life texture in
+        private Texture2D ballTexture;                   // Variable to store ball texture in
 
-        public static GameState gameState = GameState.Playing;  // Variable to store gamestate in 
+        public GameState gameState = GameState.Playing;  // Variable to store gamestate in
+
+        public static PongGame pongGame;
 
         // Constructor of MonoGame game class
         public PongGame()
@@ -41,6 +43,8 @@ namespace Pong_Game
 
             // Set window name
             this.Window.Title = "Pong";
+
+            pongGame = this;
         }
 
         // Main function, this function is called when the program is started
@@ -83,7 +87,7 @@ namespace Pong_Game
             CreatePlayers(false);
 
             // Create the ball
-            ball = new Ball(ballTexture, GraphicsDevice, spriteBatch);
+            CreateBall();
         }
 
         /// <summary>
@@ -257,6 +261,27 @@ namespace Pong_Game
             // Convert the player list to an array and store it (arrays are faster and use less memory)
             players = _players.ToArray();
         }
+
+        private void CreateBall()
+        {
+            ball = new Ball(ballTexture, GraphicsDevice, spriteBatch);
+        }
+
+
+        public bool FindPlayerToKill(PlayField field)
+        {
+            foreach (Player p in players)
+            {
+                if (p.playField == field)
+                {
+                    p.Die();
+                    CreateBall();
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 
     // Ball class
@@ -290,6 +315,10 @@ namespace Pong_Game
 
             // Set the direction according to the angle
             direction = new Vector2((random.Next(1, 3) == 1 ? 1 : -1) * r, (random.Next(1, 3) == 1 ? 1 : -1) * (1 - r));
+            if (direction.X == -1)
+                allowBounceLeft = true;
+            else
+                allowBounceRight = true;
         }
 
         // Draw the ball
@@ -297,6 +326,9 @@ namespace Pong_Game
         {
             spriteBatch.Draw(texture, new Rectangle(location.ToPoint(), size), color);
         }
+
+        bool allowBounceRight = false;
+        bool allowBounceLeft = false;
 
         // Move the ball
         public void Move(float elapsedTime)
@@ -306,18 +338,47 @@ namespace Pong_Game
 
             // Make sure the ball doesn't go out of bounds, when it hits the left or right side of the screen, take a live.
             if (location.X > (gDevice.Viewport.Width - size.X) || location.X < 0)
-                direction.X *= -1; // Should take a live from a player
+            {
+                if (location.X < gDevice.Viewport.Width / 2)
+                {
+                    if (!PongGame.pongGame.FindPlayerToKill(PlayField.Left))
+                    {
+                        if (location.Y >= gDevice.Viewport.Height / 2)
+                            PongGame.pongGame.FindPlayerToKill(PlayField.BottomLeft);
+                        else
+                            PongGame.pongGame.FindPlayerToKill(PlayField.TopLeft);
+                    }
+                }else
+                {
+                    if (!PongGame.pongGame.FindPlayerToKill(PlayField.Right))
+                    {
+                        if (location.Y >= gDevice.Viewport.Height / 2)
+                            PongGame.pongGame.FindPlayerToKill(PlayField.BottomRight);
+                        else
+                            PongGame.pongGame.FindPlayerToKill(PlayField.TopRight);
+                    }
+                }
+            }
 
             if (location.Y > (gDevice.Viewport.Height - size.Y) || location.Y < 0)
                 direction.Y *= -1;
 
             Rectangle ballRect = new Rectangle((int)location.X, (int)location.Y, size.X, size.Y);
-            foreach (Player p in PongGame.players)
+            foreach (Player p in PongGame.pongGame.players)
             {
                 Rectangle playerRect = new Rectangle(p.location.X, p.location.Y, p.size.X, p.size.Y);
 
                 if (playerRect.Intersects(ballRect))
                 {
+                    if (location.X < gDevice.Viewport.Bounds.Width / 2 && !allowBounceLeft)
+                        return;
+
+                    if (location.X > gDevice.Viewport.Bounds.Width / 2 && !allowBounceRight)
+                        return;
+
+                    allowBounceRight = !allowBounceRight;
+                    allowBounceLeft = !allowBounceLeft;
+
                     // direction x
                     direction.X *= -1;
 
@@ -456,7 +517,7 @@ namespace Pong_Game
             for (int i = 0; i < lives; i++)
             {
                 pos.X += livesTextureOffset;
-                spriteBatch.Draw(PongGame.lifeTexture, new Rectangle(pos, lifeTextureSize), Color.White);
+                spriteBatch.Draw(PongGame.pongGame.lifeTexture, new Rectangle(pos, lifeTextureSize), Color.White);
                 pos.X += lifeTextureSize.X;
             }
         }
@@ -470,11 +531,11 @@ namespace Pong_Game
             // When player doesn't have any lives left, show game over screen, or in case of four players, let the remaining player play the whole half of the screen
             if (lives <= 0)
             {
-                if (PongGame.fourPlayers)
+                if (PongGame.pongGame.fourPlayers)
                 {
                     // Remove one player from the field, unless all players from one half are dead
                     bool hasTeammate = false;
-                    foreach (Player p in PongGame.players)
+                    foreach (Player p in PongGame.pongGame.players)
                     {
                         // Try to find a teammate, if one is found, edit the playfield for this player
                         switch (playField)
@@ -517,18 +578,18 @@ namespace Pong_Game
                     // If there is no teammate: game over
                     if (!hasTeammate)
                     {
-                        PongGame.gameState = GameState.GameOver;
+                        PongGame.pongGame.gameState = GameState.GameOver;
                         return;
                     }
 
                     // If there is a teammate, remove this player from game
-                    List<Player> players = PongGame.players.ToList();
+                    List<Player> players = PongGame.pongGame.players.ToList();
                     players.Remove(this);
-                    PongGame.players = players.ToArray();
+                    PongGame.pongGame.players = players.ToArray();
                 }else
                 {
                     // Game over
-                    PongGame.gameState = GameState.GameOver;
+                    PongGame.pongGame.gameState = GameState.GameOver;
                 }
             }
         }
