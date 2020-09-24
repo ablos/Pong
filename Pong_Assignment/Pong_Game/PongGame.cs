@@ -321,27 +321,26 @@ namespace Pong_Game
                     // direction x
                     direction.X *= -1;
 
-                    if (((int)location.Y + size.Y / 2) >= (p.location.Y + p.size.Y / 5))
+                    if (((int)location.Y + size.Y / 2) <= (p.location.Y + p.size.Y / 5))
                     {
                         direction.Y = -1;
                     }
                     else if (((int)location.Y + size.Y / 2) > (p.location.Y + p.size.Y / 5)
-                        && ((int)location.Y + size.Y / 2) >= 2 * (p.location.Y + p.size.Y / 5))
+                        && ((int)location.Y + size.Y / 2) <= (2 * (p.location.Y + p.size.Y / 5)))
                     {
                         direction.Y = -0.5f;
                     }
-                    else if (((int)location.Y + size.Y / 2) > 2 * (p.location.Y + p.size.Y / 5)
-                        && ((int)location.Y + size.Y / 2) >= 3 * (p.location.Y + p.size.Y / 5))
+                    else if (((int)location.Y + size.Y / 2) > (2 * (p.location.Y + p.size.Y / 5))
+                        && ((int)location.Y + size.Y / 2) <= (3 * (p.location.Y + p.size.Y / 5)))
                     {
                         direction.Y = 0;
                     }
-                    else if (((int)location.Y + size.Y / 2) > 3 * (p.location.Y + p.size.Y / 5)
-                        && ((int)location.Y + size.Y / 2) >= 4 * (p.location.Y + p.size.Y / 5))
+                    else if (((int)location.Y + size.Y / 2) > (3 * (p.location.Y + p.size.Y / 5))
+                        && ((int)location.Y + size.Y / 2) <= (4 * (p.location.Y + p.size.Y / 5)))
                     {
                         direction.Y = 0.5f;
                     }
-                    else if (((int)location.Y + size.Y / 2) > 4 * (p.location.Y + p.size.Y / 5)
-                        && ((int)location.Y + size.Y / 2) >= (p.location.Y + p.size.Y / 5))
+                    else if (((int)location.Y + size.Y / 2) > (4 * (p.location.Y + p.size.Y / 5)))
                     {
                         direction.Y = 1;
                     }
@@ -357,7 +356,7 @@ namespace Pong_Game
         private int livesTextureOffset = 5;                             // Offset for the space between the textures of the lives
         private readonly Point lifeTextureSize = new Point(20, 20);     // Size of the life textures
         private const int speed = 10;                                   // Set speed of player (is for every player)
-        public readonly Point size = new Point(20, 80);                 // Set size of player (is for every player, readonly to prevent accedental edits)
+        public readonly Point size = new Point(20, 160);                 // Set size of player (is for every player, readonly to prevent accedental edits)
         public Point location;                                          // Variable to store player location
         private Texture2D texture;                                      // Variable to store the texture of the player
         public Color color;                                             // Variable to store the color of the player
