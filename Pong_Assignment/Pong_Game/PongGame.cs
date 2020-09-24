@@ -20,19 +20,19 @@ namespace Pong_Game
     /// </summary>
     public class PongGame : Game
     {
-        GraphicsDeviceManager graphics;                  // Variable to store the MonoGame Graphics Device Manager
-        SpriteBatch spriteBatch;                         // Variable to store the MonoGame Sprite Batch
+        GraphicsDeviceManager graphics;                     // Variable to store the MonoGame Graphics Device Manager
+        SpriteBatch spriteBatch;                            // Variable to store the MonoGame Sprite Batch
 
-        public bool fourPlayers;                         // Variable to determine if game should be played with four or two players
-        public Player[] players;                         // Array to store all players created
-        public Ball ball;                                // Variable to store ball in
+        public bool fourPlayers;                            // Variable to determine if game should be played with four or two players
+        public Player[] players;                            // Array to store all players created
+        public Ball ball;                                   // Variable to store ball in
 
-        public Texture2D lifeTexture;                    // Variable to store life texture in
-        private Texture2D ballTexture;                   // Variable to store ball texture in
+        public Texture2D lifeTexture;                       // Variable to store life texture in
+        private Texture2D ballTexture;                      // Variable to store ball texture in
 
-        public GameState gameState = GameState.Playing;  // Variable to store gamestate in
+        public GameState gameState = GameState.Playing;     // Variable to store gamestate in
 
-        public static PongGame pongGame;
+        public static PongGame pongGame;                    // Variable to store instance of this class
 
         // Constructor of MonoGame game class
         public PongGame()
@@ -44,6 +44,7 @@ namespace Pong_Game
             // Set window name
             this.Window.Title = "Pong";
 
+            // Create a static instance of this class for accessibility from other classes
             pongGame = this;
         }
 
@@ -262,12 +263,13 @@ namespace Pong_Game
             players = _players.ToArray();
         }
 
+        // Create a new ball in the middle of the screen, with a new random start direction (removes the old ball)
         private void CreateBall()
         {
             ball = new Ball(ballTexture, GraphicsDevice, spriteBatch);
         }
 
-
+        // Find a player to kill with the same playfield the ball is in, when found, kill the player and reset the ball
         public bool FindPlayerToKill(PlayField field)
         {
             foreach (Player p in players)
@@ -287,7 +289,7 @@ namespace Pong_Game
     // Ball class
     public class Ball
     {
-        private const float speed = 700;                        // Variable to store speed of the ball
+        private const float speed = 400;                        // Variable to store speed of the ball
         public Vector2 location;                                // Variable to store location of the ball
         private readonly Point size = new Point(18, 18);        // Variable to store size of the ball
         public Color color = Color.White;                       // Variable to store color of the ball
@@ -297,6 +299,8 @@ namespace Pong_Game
         private Vector2 direction;                              // Variable to store the direction of the ball
         private Random random = new Random();                   // Variable used to create random numbers
         private float minimumAngle = 0.4f;                      // Variable to store minimum angle of the start direction of the ball
+        private bool allowBounceRight = false;                  // Variable to store if ball is allowed to bounce against players on the right
+        private bool allowBounceLeft = false;                   // Variable to store if ball is allowed to bounce against players on the left
 
         // Constructor of the ball class
         public Ball(Texture2D texture, GraphicsDevice gDevice, SpriteBatch spriteBatch)
@@ -314,7 +318,9 @@ namespace Pong_Game
                 r = minimumAngle;
 
             // Set the direction according to the angle
-            direction = new Vector2((random.Next(1, 3) == 1 ? 1 : -1) * r, (random.Next(1, 3) == 1 ? 1 : -1) * (1 - r));
+            direction = new Vector2((random.Next(1, 3) == 1 ? 1 : -1), (random.Next(1, 3) == 1 ? 1 : -1) * r);
+
+            // Set restrictions for bouncing
             if (direction.X < 0)
                 allowBounceLeft = true;
             else
@@ -327,9 +333,6 @@ namespace Pong_Game
             spriteBatch.Draw(texture, new Rectangle(location.ToPoint(), size), color);
         }
 
-        bool allowBounceRight = false;
-        bool allowBounceLeft = false;
-
         // Move the ball
         public void Move(float elapsedTime)
         {
@@ -339,74 +342,91 @@ namespace Pong_Game
             // Make sure the ball doesn't go out of bounds, when it hits the left or right side of the screen, take a live.
             if (location.X > (gDevice.Viewport.Width - size.X) || location.X < 0)
             {
+                // Is the ball on the left side of the screen?
                 if (location.X < gDevice.Viewport.Width / 2)
                 {
+                    // If there is a player that plays on the left side, kill it
                     if (!PongGame.pongGame.FindPlayerToKill(PlayField.Left))
                     {
+                        // If there is a player on the bottom left, and the ball is there as well, kill it
                         if (location.Y >= gDevice.Viewport.Height / 2)
                             PongGame.pongGame.FindPlayerToKill(PlayField.BottomLeft);
+                        // If there is a player on the top left, and the ball is there as well, kill it
                         else
                             PongGame.pongGame.FindPlayerToKill(PlayField.TopLeft);
                     }
-                }else
+                }
+                // The ball is on the right side of the screen
+                else
                 {
+                    // If there is a player that plays the right side, kill it
                     if (!PongGame.pongGame.FindPlayerToKill(PlayField.Right))
                     {
+                        // If there is a player on the bottom right, and the ball is there as well, kill it
                         if (location.Y >= gDevice.Viewport.Height / 2)
                             PongGame.pongGame.FindPlayerToKill(PlayField.BottomRight);
+                        // If there is a player on the top right, and the ball is there as well, kill it
                         else
                             PongGame.pongGame.FindPlayerToKill(PlayField.TopRight);
                     }
                 }
             }
 
+            // Make sure the ball doesn't go out of bounds, when it hits the top or the bottom, invert the Y direction
             if (location.Y > (gDevice.Viewport.Height - size.Y) || location.Y < 0)
                 direction.Y *= -1;
 
-            Rectangle ballRect = new Rectangle((int)location.X, (int)location.Y, size.X, size.Y);
+            // Create a rectangle around the ball to detect collision
+            Rectangle ballRect = new Rectangle(location.ToPoint(), size);
             foreach (Player p in PongGame.pongGame.players)
             {
-                Rectangle playerRect = new Rectangle(p.location.X, p.location.Y, p.size.X, p.size.Y);
+                // Create a rectangle around the player to detect collision
+                Rectangle playerRect = new Rectangle(p.location, p.size);
 
+                // If both rectangles intersect, decide what to do with the ball
                 if (playerRect.Intersects(ballRect))
                 {
+                    // If the ball is on the left side, but it isn't allowed to bounce against the player (to prevent the ball getting stuck in the player), stop here
                     if (location.X < gDevice.Viewport.Bounds.Width / 2 && !allowBounceLeft)
                         return;
 
+                    // If the ball is on the right side, but it isn't allowed to bounce against the player (to prevent the ball getting stuck in the player), stop here
                     if (location.X > gDevice.Viewport.Bounds.Width / 2 && !allowBounceRight)
                         return;
 
+                    // Invert the restrictions
                     allowBounceRight = !allowBounceRight;
                     allowBounceLeft = !allowBounceLeft;
 
-                    // direction x
+                    // Invert the X direction
                     direction.X *= -1;
 
+                    // If the ball hits the player on the top 1/5th of the player, bounce up
                     if (((int)location.Y + size.Y / 2) <= (p.location.Y + p.size.Y / 5))
                     {
-                        Debug.WriteLine("Up");
                         direction.Y = -1;
                     }
+                    // If the ball hits the player on the second to top 1/5th of the player, bounce slightly up
                     else if (((int)location.Y + size.Y / 2) > (p.location.Y + p.size.Y / 5)
                         && ((int)location.Y + size.Y / 2) <= p.location.Y + 2 * p.size.Y / 5)
                     {
                         direction.Y = -0.5f;
                     }
+                    // If the ball hits the player in the middle, bounce straight
                     else if (((int)location.Y + size.Y / 2) > p.location.Y + 2 * p.size.Y / 5
                         && ((int)location.Y + size.Y / 2) <= p.location.Y + 3 * p.size.Y / 5)
                     {
-                        Debug.WriteLine("Straight");
                         direction.Y = 0;
                     }
+                    // If the ball hits the player on the second to bottom 1/5th of the player, bounce slightly down
                     else if (((int)location.Y + size.Y / 2) > p.location.Y + 3 * p.size.Y / 5
                         && ((int)location.Y + size.Y / 2) <= p.location.Y + 4 * p.size.Y / 5)
                     {
-                        Debug.WriteLine("Half down");
                         direction.Y = 0.5f;
                     }
+                    // If the ball hits the player on the bottom 1/5th of the player, bounce down
                     else if (((int)location.Y + size.Y / 2) > p.location.Y + 4 * p.size.Y / 5)
                     {
-                        Debug.WriteLine("Down");
                         direction.Y = 1;
                     }
                 }
