@@ -11,11 +11,27 @@ namespace Pong_Game
 {
     public class GameOverScreen
     {
+        // Constructor
+        public GameOverScreen()
+        {
+            // Make the mouse pointer visible
+            PongGame.pongGame.IsMouseVisible = true;
+        }
+
+        // Deconstructor
+        ~GameOverScreen()
+        {
+            // Make the mouse pointer invisible
+            PongGame.pongGame.IsMouseVisible = false;
+        }
+
+        // Update Method
         public void Update()
         {
 
         }
 
+        // Draw method
         public void Draw()
         {
 

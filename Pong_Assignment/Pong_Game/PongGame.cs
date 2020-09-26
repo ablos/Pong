@@ -64,12 +64,6 @@ namespace Pong_Game
             // MonoGame required lines
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
-            // Set window name
-            this.Window.Title = "Pong";
-
-            // Create a static instance of this class for accessibility from other classes
-            pongGame = this;
         }
 
         // Main function, this function is called when the program is started
@@ -89,6 +83,12 @@ namespace Pong_Game
         /// </summary>
         protected override void Initialize()
         {
+            // Set window name
+            Window.Title = "Pong";
+
+            // Create a static instance of this class for accessibility from other classes
+            pongGame = this;
+
             // Execute MonoGame base Initialization method
             base.Initialize();
         }

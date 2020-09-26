@@ -23,10 +23,10 @@ namespace Pong_Game
         MouseState mouseState;
         MouseState previousMouseState;
 
-
+        // COnstructor
         public MenuScreen()
         {
-            //make the mouse pointer visible
+            // Make the mouse pointer visible
             PongGame.pongGame.IsMouseVisible = true;
 
             quitPosition = new Vector2(PongGame.pongGame.ScreenSize.X / 8, 4 * (PongGame.pongGame.ScreenSize.Y / 5));
@@ -35,11 +35,21 @@ namespace Pong_Game
             menuPongPosition = new Vector2((PongGame.pongGame.ScreenSize.X / 2) - (menuPongSize.X / 2), PongGame.pongGame.ScreenSize.Y / 10);
 
         }
+
+        // Deconstructor
+        ~MenuScreen()
+        {
+            // Make the mouse pointer invisible
+            PongGame.pongGame.IsMouseVisible = false;
+        }
+
+        // Update method
         public void Update()
         {
 
         }
 
+        // Draw method
         public void Draw()
         {
 
