@@ -30,6 +30,13 @@ namespace Pong_Game
         public Texture2D lifeTexture;                       // Variable to store life texture in
         public Texture2D ballTexture;                       // Variable to store ball texture in
 
+        public Texture2D quitButton;
+        public Texture2D twoPlayersButton;
+        public Texture2D fourPlayersButton;
+        public Texture2D menuButton;
+        public Texture2D newGameButton;
+        public Texture2D menuPong;
+
         public GameState gameState = GameState.Playing;     // Variable to store gamestate in
 
         public static PongGame pongGame;                    // Variable to store instance of this class
