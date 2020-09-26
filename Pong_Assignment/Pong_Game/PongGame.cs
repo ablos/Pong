@@ -21,7 +21,7 @@ namespace Pong_Game
     public class PongGame : Game
     {
         GraphicsDeviceManager graphics;                     // Variable to store the MonoGame Graphics Device Manager
-        SpriteBatch spriteBatch;                            // Variable to store the MonoGame Sprite Batch
+        public SpriteBatch spriteBatch;                     // Variable to store the MonoGame Sprite Batch
 
         public bool fourPlayers;                            // Variable to determine if game should be played with four or two players
         public Player[] players;                            // Array to store all players created
@@ -33,6 +33,18 @@ namespace Pong_Game
         public GameState gameState = GameState.Playing;     // Variable to store gamestate in
 
         public static PongGame pongGame;                    // Variable to store instance of this class
+
+        // Get property to get screensize
+        public Vector2 ScreenSize
+        {
+            get { return new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height); }
+        }
+
+        // Get property to get access to graphics device
+        public GraphicsDevice gDevice
+        {
+            get { return GraphicsDevice; }
+        }
 
         // Constructor of MonoGame game class
         public PongGame()
@@ -234,8 +246,8 @@ namespace Pong_Game
             List<Player> _players = new List<Player>();
 
             // Create players one and two
-            Player playerOne = new Player(Color.Red, PlayField.Left, GraphicsDevice, spriteBatch);
-            Player playerTwo = new Player(Color.Yellow, PlayField.Right, GraphicsDevice, spriteBatch);
+            Player playerOne = new Player(Color.Red, PlayField.Left);
+            Player playerTwo = new Player(Color.Yellow, PlayField.Right);
 
             // Add all players to the player list
             _players.Add(playerOne);
@@ -251,8 +263,8 @@ namespace Pong_Game
                 playerTwo.MoveToStartLocation();
 
                 // Create players three and four
-                Player playerThree = new Player(Color.LimeGreen, PlayField.BottomLeft, GraphicsDevice, spriteBatch);
-                Player playerFour = new Player(Color.CornflowerBlue, PlayField.BottomRight, GraphicsDevice, spriteBatch);
+                Player playerThree = new Player(Color.LimeGreen, PlayField.BottomLeft);
+                Player playerFour = new Player(Color.CornflowerBlue, PlayField.BottomRight);
 
                 // Add all players to the player list
                 _players.Add(playerThree);
@@ -266,7 +278,7 @@ namespace Pong_Game
         // Create a new ball in the middle of the screen, with a new random start direction (removes the old ball)
         private void CreateBall()
         {
-            ball = new Ball(ballTexture, GraphicsDevice, spriteBatch);
+            ball = new Ball(ballTexture);
         }
 
         // Find a player to kill with the same playfield the ball is in, when found, kill the player and reset the ball
