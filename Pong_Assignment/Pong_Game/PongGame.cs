@@ -29,13 +29,12 @@ namespace Pong_Game
 
         public Texture2D lifeTexture;                       // Variable to store life texture in
         public Texture2D ballTexture;                       // Variable to store ball texture in
-
-        public Texture2D quitButton;
-        public Texture2D twoPlayersButton;
-        public Texture2D fourPlayersButton;
-        public Texture2D menuButton;
-        public Texture2D newGameButton;
-        public Texture2D menuPong;
+        public Texture2D quitButtonTexture;                 // Variable to store quit button texture in
+        public Texture2D twoPlayersButtonTexture;           // Variable to store two players button texture in
+        public Texture2D fourPlayersButtonTexture;          // Variable to store four players button texture in
+        public Texture2D menuButtonTexture;                 // Variable to store menu button texture in
+        public Texture2D newGameButtonTexture;              // Variable to store new game button texture in
+        public Texture2D menuPongTexture;                   // Variable to store menu title texture in
 
         public GameState gameState = GameState.Playing;     // Variable to store gamestate in
 
@@ -103,11 +102,15 @@ namespace Pong_Game
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // Load the life texture
+            // Load textures
             lifeTexture = Content.Load<Texture2D>("life");
-
-            // Load the ball texture
             ballTexture = Content.Load<Texture2D>("ball");
+            fourPlayersButtonTexture = Content.Load<Texture2D>("four-player-button");
+            menuButtonTexture = Content.Load<Texture2D>("menu-button");
+            menuPongTexture = Content.Load<Texture2D>("menu-pong");
+            newGameButtonTexture = Content.Load<Texture2D>("new-game-button");
+            quitButtonTexture = Content.Load<Texture2D>("quit-button");
+            twoPlayersButtonTexture = Content.Load<Texture2D>("two-players-button");
         }
 
         /// <summary>
