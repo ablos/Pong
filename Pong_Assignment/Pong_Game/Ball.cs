@@ -24,11 +24,8 @@ namespace Pong_Game
         private float minimumAngle = 0.4f;                      // Variable to store minimum angle of the start direction of the ball
         private bool allowBounceRight = false;                  // Variable to store if ball is allowed to bounce against players on the right
         private bool allowBounceLeft = false;                   // Variable to store if ball is allowed to bounce against players on the left
-
-        /*
-         * !!! IMPORTANT !!!
-         * Ball can get stuck on ceiling or bottom, prevent this from allowing it to only bounce once, until it has bounced onto something else.
-         */
+        private bool allowBounceTop = true;                     // Variable to store if ball is allowed to bounce against the ceiling
+        private bool allowBounceBottom = true;                  // Variable to store if ball is allowed to bounce against the bottom
 
         // Constructor of the ball class
         public Ball(Texture2D texture, GraphicsDevice gDevice, SpriteBatch spriteBatch)
@@ -101,8 +98,17 @@ namespace Pong_Game
             }
 
             // Make sure the ball doesn't go out of bounds, when it hits the top or the bottom, invert the Y direction
-            if (location.Y > (gDevice.Viewport.Height - size.Y) || location.Y < 0)
+            if (location.Y > (gDevice.Viewport.Height - size.Y) && allowBounceBottom)
+            {
                 direction.Y *= -1;
+                allowBounceBottom = false;
+                allowBounceTop = true;
+            }else if (location.Y < 0 && allowBounceTop)
+            {
+                direction.Y *= -1;
+                allowBounceBottom = true;
+                allowBounceTop = false;
+            }
 
             // Create a rectangle around the ball to detect collision
             Rectangle ballRect = new Rectangle(location.ToPoint(), size);
@@ -125,6 +131,10 @@ namespace Pong_Game
                     // Invert the restrictions
                     allowBounceRight = !allowBounceRight;
                     allowBounceLeft = !allowBounceLeft;
+
+                    // Ball bounced, allow to bounce on top and bottom again
+                    allowBounceTop = true;
+                    allowBounceBottom = true;
 
                     // Invert the X direction
                     direction.X *= -1;
