@@ -302,6 +302,11 @@ namespace Pong_Game
         private bool allowBounceRight = false;                  // Variable to store if ball is allowed to bounce against players on the right
         private bool allowBounceLeft = false;                   // Variable to store if ball is allowed to bounce against players on the left
 
+        /*
+         * !!! IMPORTANT !!!
+         * Ball can get stuck on ceiling or bottom, prevent this from allowing it to only bounce once, until it has bounced onto something else.
+         */
+
         // Constructor of the ball class
         public Ball(Texture2D texture, GraphicsDevice gDevice, SpriteBatch spriteBatch)
         {
