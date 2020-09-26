@@ -12,15 +12,30 @@ namespace Pong_Game
     // Player class
     public class Player
     {
-        public int lives = 3;                                           // Variable to store lives for player
-        private int livesTextureOffset = 5;                             // Offset for the space between the textures of the lives
-        private readonly Point lifeTextureSize = new Point(20, 20);     // Size of the life textures
-        private const int speed = 10;                                   // Set speed of player (is for every player)
-        public readonly Point size = new Point(20, 100);                // Set size of player (is for every player, readonly to prevent accedental edits)
-        public Point location;                                          // Variable to store player location
-        private Texture2D texture;                                      // Variable to store the texture of the player
-        public Color color;                                             // Variable to store the color of the player
-        public PlayField playField;                                     // Variable to store playfield for player -> where is he allowed to play
+        public int lives = 3;                                               // Variable to store lives for player
+        private static int livesTextureOffset = 5;                          // Offset for the space between the textures of the lives (same for every player)
+        private static readonly Point lifeTextureSize = new Point(20, 20);  // Size of the life textures (same for every player)
+        private const int speed = 10;                                       // Set speed of player (is for every player)
+        private static readonly Point fourPlayerSize = new Point(20, 85);   // Set size of player (is for every player, readonly to prevent accedental edits)
+        private static readonly Point twoPlayerSize = new Point(20, 125);   // Set size of player when playing with two players (same for every player)
+        public Point location;                                              // Variable to store player location
+        private Texture2D texture;                                          // Variable to store the texture of the player
+        public Color color;                                                 // Variable to store the color of the player
+        public PlayField playField;                                         // Variable to store playfield for player -> where is he allowed to play
+
+        // Get property for size of player
+        public Point size
+        {
+            get
+            {
+                // When playing half of screen return size for two player mode
+                if (playField == PlayField.Left || playField == PlayField.Right)
+                    return twoPlayerSize;
+                // When playing quarter of screen return size for four player mode
+                else
+                    return fourPlayerSize;
+            }
+        }
 
         // Constructor for the player class
         public Player(Color color, PlayField playField)
