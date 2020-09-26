@@ -9,8 +9,16 @@ using System.Threading;
 
 namespace Pong_Game
 {
-    class GameOverScreen
+    public class GameOverScreen
     {
+        public void Update()
+        {
 
+        }
+
+        public void Draw()
+        {
+
+        }
     }
 }

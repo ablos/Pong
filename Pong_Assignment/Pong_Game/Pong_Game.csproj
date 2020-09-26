@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Ball.cs" />
     <Compile Include="GameOverScreen.cs" />
+    <Compile Include="MenuScreen.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PongGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
