@@ -23,23 +23,22 @@ namespace Pong_Game
         GraphicsDeviceManager graphics;                     // Variable to store the MonoGame Graphics Device Manager
         public SpriteBatch spriteBatch;                     // Variable to store the MonoGame Sprite Batch
 
-        public bool fourPlayers;                            // Variable to determine if game should be played with four or two players
+        public bool fourPlayers = false;                    // Variable to determine if game should be played with four or two players
         public Player[] players;                            // Array to store all players created
         public Ball ball;                                   // Variable to store ball in
 
         public Texture2D lifeTexture;                       // Variable to store life texture in
-        private Texture2D ballTexture;                      // Variable to store ball texture in
-
-        public Texture2D quitButton;
-        public Texture2D twoPlayersButton;
-        public Texture2D fourPlayersButton;
-        public Texture2D menuButton;
-        public Texture2D newGameButton;
-        public Texture2D menuPong;
+        public Texture2D ballTexture;                       // Variable to store ball texture in
 
         public GameState gameState = GameState.Playing;     // Variable to store gamestate in
 
         public static PongGame pongGame;                    // Variable to store instance of this class
+
+        public MenuScreen menuScreen;                       // Variable to store instance off MenuScreen
+        public GameHandler gameHandler;                     // Variable to store instance of PlayerHandler
+        public GameOverScreen gameOverScreen;               // Variable to store instance of GameOverScreen
+
+        public Random random = new Random();                // Create a random variable
 
         // Get property to get screensize
         public Vector2 ScreenSize
@@ -102,20 +101,6 @@ namespace Pong_Game
 
             // Load the ball texture
             ballTexture = Content.Load<Texture2D>("ball");
-
-            // Create players
-            CreatePlayers(false);
-
-            // Create the ball
-            CreateBall();
-
-            quitButton = Content.Load<Texture2D>("quit-button");
-            twoPlayersButton = Content.Load<Texture2D>("two-players-button");
-            fourPlayersButton = Content.Load<Texture2D>("four-player-button");
-            menuButton = Content.Load<Texture2D>("menu-button");
-            newGameButton = Content.Load<Texture2D>("new-game-button");
-            menuPong = Content.Load<Texture2D>("menu-pong");
-            
         }
 
         /// <summary>
@@ -138,83 +123,46 @@ namespace Pong_Game
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            // Only execute this code when in menu
+            if (gameState == GameState.InMenu)
+            {
+                // If there is no menu screen, create one
+                if (menuScreen == null)
+                    menuScreen = new MenuScreen();
+
+                menuScreen.Update();
+            }else
+            {
+                // Destroy menu screen
+                menuScreen = null;
+            }
+
             // Only execute this code when game is running
             if (gameState == GameState.Playing)
             {
-                // Check if playing with four or two players
-                if (!fourPlayers)
-                {
-                    // When playing with two players
+                // If there is no game handler, create one
+                if (gameHandler == null)
+                    gameHandler = new GameHandler();
 
-                    // When key S is pressed
-                    if (Keyboard.GetState().IsKeyDown(Keys.S))
-                        players[0].Move(false);
-                    // When key W is pressed
-                    else if (Keyboard.GetState().IsKeyDown(Keys.W))
-                        players[0].Move(true);
+                gameHandler.Update(gameTime);
+            }else
+            {
+                // Delete instance of game handler
+                gameHandler = null;
+            }
 
-                    // When arrow down is pressed
-                    if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                        players[1].Move(false);
-                    // When arrow up is pressed
-                    else if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                        players[1].Move(true);
-                }
-                else
-                {
-                    // When playing with four players
+            // Only execute this code when gamestate is game over
+            if (gameState == GameState.GameOver)
+            {
+                // If there is no game over screen, create one
+                if (gameOverScreen == null)
+                    gameOverScreen = new GameOverScreen();
 
-                    // Loop trough all players
-                    foreach (Player p in players)
-                    {
-                        // Key checks for top left player
-                        if (p.playField == PlayField.TopLeft || p.playField == PlayField.Left)
-                        {
-                            // When S key is pressed
-                            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                                p.Move(false);
-                            // When W key is pressed
-                            else if (Keyboard.GetState().IsKeyDown(Keys.W))
-                                p.Move(true);
-                        }
-
-                        // Key checks for bottom left player
-                        if (p.playField == PlayField.BottomLeft || p.playField == PlayField.Left)
-                        {
-                            // When C key is pressed
-                            if (Keyboard.GetState().IsKeyDown(Keys.C))
-                                p.Move(false);
-                            // When F key is pressed
-                            else if (Keyboard.GetState().IsKeyDown(Keys.F))
-                                p.Move(true);
-                        }
-
-                        // Key checks for top right player
-                        if (p.playField == PlayField.TopRight || p.playField == PlayField.Right)
-                        {
-                            // When arrow down key is pressed
-                            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                                p.Move(false);
-                            // When arrow up key is pressed
-                            else if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                                p.Move(true);
-                        }
-
-                        // Key checks for bottom right player
-                        if (p.playField == PlayField.BottomRight || p.playField == PlayField.Right)
-                        {
-                            // When ? key is pressed
-                            if (Keyboard.GetState().IsKeyDown(Keys.OemQuestion))
-                                p.Move(false);
-                            // When ' key is pressed
-                            else if (Keyboard.GetState().IsKeyDown(Keys.OemQuotes))
-                                p.Move(true);
-                        }
-                    }
-                }
-
-                // Move ball
-                ball.Move((float)gameTime.ElapsedGameTime.TotalSeconds);
+                gameOverScreen.Update();
+            }else
+            {
+                // Delete instance of game over screen
+                gameOverScreen = null;
             }
 
             // Execute MonoGame base Update method
@@ -233,15 +181,17 @@ namespace Pong_Game
             // Start the spriteBatch to allow drawing
             spriteBatch.Begin();
 
-            // Only execute this code when game is running
-            if (gameState == GameState.Playing)
+            switch (gameState)
             {
-                // Draw all players
-                foreach (Player p in players)
-                    p.Draw();
-
-                // Draw the ball
-                ball.Draw();
+                case GameState.InMenu:
+                    menuScreen.Draw();
+                    break;
+                case GameState.Playing:
+                    gameHandler.Draw();
+                    break;
+                case GameState.GameOver:
+                    gameOverScreen.Draw();
+                    break;
             }
 
             // End the spritebatch
@@ -249,67 +199,6 @@ namespace Pong_Game
 
             // Execute MonoGame base draw method
             base.Draw(gameTime);
-        }
-
-        // Create players
-        private void CreatePlayers(bool _fourPlayers)
-        {
-            // Store the bool in the class variable
-            fourPlayers = _fourPlayers;
-
-            // Create player list to store all created players (using list for easy adding without setting a size first)
-            List<Player> _players = new List<Player>();
-
-            // Create players one and two
-            Player playerOne = new Player(Color.Red, PlayField.Left);
-            Player playerTwo = new Player(Color.Yellow, PlayField.Right);
-
-            // Add all players to the player list
-            _players.Add(playerOne);
-            _players.Add(playerTwo);
-
-            // When four player mode is activated, create more players and update old players update field and start locations
-            if (fourPlayers)
-            {
-                // Edit playfields of players one and two and update start locations
-                playerOne.playField = PlayField.TopLeft;
-                playerOne.MoveToStartLocation();
-                playerTwo.playField = PlayField.TopRight;
-                playerTwo.MoveToStartLocation();
-
-                // Create players three and four
-                Player playerThree = new Player(Color.LimeGreen, PlayField.BottomLeft);
-                Player playerFour = new Player(Color.CornflowerBlue, PlayField.BottomRight);
-
-                // Add all players to the player list
-                _players.Add(playerThree);
-                _players.Add(playerFour);
-            }
-
-            // Convert the player list to an array and store it (arrays are faster and use less memory)
-            players = _players.ToArray();
-        }
-
-        // Create a new ball in the middle of the screen, with a new random start direction (removes the old ball)
-        private void CreateBall()
-        {
-            ball = new Ball(ballTexture);
-        }
-
-        // Find a player to kill with the same playfield the ball is in, when found, kill the player and reset the ball
-        public bool FindPlayerToKill(PlayField field)
-        {
-            foreach (Player p in players)
-            {
-                if (p.playField == field)
-                {
-                    p.Die();
-                    CreateBall();
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }

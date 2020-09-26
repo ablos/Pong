@@ -12,34 +12,38 @@ namespace Pong_Game
     // Ball class
     public class Ball
     {
-        private const float speed = 400;                        // Variable to store speed of the ball
-        public Vector2 location;                                // Variable to store location of the ball
-        private readonly Point size = new Point(18, 18);        // Variable to store size of the ball
-        public Color color = Color.White;                       // Variable to store color of the ball
-        private Texture2D texture;                              // Variable to store the texture of the ball
-        private Vector2 direction;                              // Variable to store the direction of the ball
-        private Random random = new Random();                   // Variable used to create random numbers
-        private float minimumAngle = 0.4f;                      // Variable to store minimum angle of the start direction of the ball
-        private bool allowBounceRight = false;                  // Variable to store if ball is allowed to bounce against players on the right
-        private bool allowBounceLeft = false;                   // Variable to store if ball is allowed to bounce against players on the left
-        private bool allowBounceTop = true;                     // Variable to store if ball is allowed to bounce against the ceiling
-        private bool allowBounceBottom = true;                  // Variable to store if ball is allowed to bounce against the bottom
+        private const float speed = 400;                            // Variable to store speed of the ball
+        public Vector2 location;                                    // Variable to store location of the ball
+        private static readonly Point size = new Point(18, 18);     // Variable to store size of the ball
+        public Color color = Color.White;                           // Variable to store color of the ball
+        private Texture2D texture;                                  // Variable to store the texture of the ball
+        private Vector2 direction;                                  // Variable to store the direction of the ball
+        private static float minimumAngle = 0.4f;                   // Variable to store minimum angle of the start direction of the ball
+        private bool allowBounceRight = false;                      // Variable to store if ball is allowed to bounce against players on the right
+        private bool allowBounceLeft = false;                       // Variable to store if ball is allowed to bounce against players on the left
+        private bool allowBounceTop = true;                         // Variable to store if ball is allowed to bounce against the ceiling
+        private bool allowBounceBottom = true;                      // Variable to store if ball is allowed to bounce against the bottom
+        private static DateTime roundStartTime;                     // Variable to store when this round has started
+        private const float speedMultiplier = 10;                   // Variable to multiply speed by (using time as well)
 
         // Constructor of the ball class
         public Ball(Texture2D texture)
         {
             this.texture = texture;             // Copy the given texture value to the local texture variable
 
+            // Save the current time as the start of the round
+            roundStartTime = DateTime.Now;
+
             // Position the ball in the middle of the screen
             location = new Vector2((PongGame.pongGame.ScreenSize.X / 2) - (size.X / 2), (PongGame.pongGame.ScreenSize.Y / 2) - (size.Y / 2));
 
             // Get a random angle and make sure it is above the minimum angle
-            float r = (float)random.NextDouble();
+            float r = (float)PongGame.pongGame.random.NextDouble();
             if (r < minimumAngle)
                 r = minimumAngle;
 
             // Set the direction according to the angle
-            direction = new Vector2((random.Next(1, 3) == 1 ? 1 : -1), (random.Next(1, 3) == 1 ? 1 : -1) * r);
+            direction = new Vector2((PongGame.pongGame.random.Next(1, 3) == 1 ? 1 : -1), (PongGame.pongGame.random.Next(1, 3) == 1 ? 1 : -1) * r);
 
             // Set restrictions for bouncing
             if (direction.X < 0)
@@ -54,12 +58,8 @@ namespace Pong_Game
             PongGame.pongGame.spriteBatch.Draw(texture, new Rectangle(location.ToPoint(), size), color);
         }
 
-        // Move the ball
-        public void Move(float elapsedTime)
+        public void DetectOutOfBounds()
         {
-            // Move the ball according to the direction, speed and time
-            location += direction * speed * elapsedTime;
-
             // Make sure the ball doesn't go out of bounds, when it hits the left or right side of the screen, take a live.
             if (location.X > (PongGame.pongGame.ScreenSize.X - size.X) || location.X < 0)
             {
@@ -67,45 +67,49 @@ namespace Pong_Game
                 if (location.X < PongGame.pongGame.ScreenSize.X / 2)
                 {
                     // If there is a player that plays on the left side, kill it
-                    if (!PongGame.pongGame.FindPlayerToKill(PlayField.Left))
+                    if (!PongGame.pongGame.gameHandler.FindPlayerToKill(PlayField.Left))
                     {
                         // If there is a player on the bottom left, and the ball is there as well, kill it
                         if (location.Y >= PongGame.pongGame.ScreenSize.Y / 2)
-                            PongGame.pongGame.FindPlayerToKill(PlayField.BottomLeft);
+                            PongGame.pongGame.gameHandler.FindPlayerToKill(PlayField.BottomLeft);
                         // If there is a player on the top left, and the ball is there as well, kill it
                         else
-                            PongGame.pongGame.FindPlayerToKill(PlayField.TopLeft);
+                            PongGame.pongGame.gameHandler.FindPlayerToKill(PlayField.TopLeft);
                     }
                 }
                 // The ball is on the right side of the screen
                 else
                 {
                     // If there is a player that plays the right side, kill it
-                    if (!PongGame.pongGame.FindPlayerToKill(PlayField.Right))
+                    if (!PongGame.pongGame.gameHandler.FindPlayerToKill(PlayField.Right))
                     {
                         // If there is a player on the bottom right, and the ball is there as well, kill it
                         if (location.Y >= PongGame.pongGame.ScreenSize.Y / 2)
-                            PongGame.pongGame.FindPlayerToKill(PlayField.BottomRight);
+                            PongGame.pongGame.gameHandler.FindPlayerToKill(PlayField.BottomRight);
                         // If there is a player on the top right, and the ball is there as well, kill it
                         else
-                            PongGame.pongGame.FindPlayerToKill(PlayField.TopRight);
+                            PongGame.pongGame.gameHandler.FindPlayerToKill(PlayField.TopRight);
                     }
                 }
             }
 
-            // Make sure the ball doesn't go out of bounds, when it hits the top or the bottom, invert the Y direction
+            // Make sure the ball doesn't go out of bounds, when it hits the top or the bottom, invert the Y direction when allowed
             if (location.Y > (PongGame.pongGame.ScreenSize.Y - size.Y) && allowBounceBottom)
             {
                 direction.Y *= -1;
                 allowBounceBottom = false;
                 allowBounceTop = true;
-            }else if (location.Y < 0 && allowBounceTop)
+            }
+            else if (location.Y < 0 && allowBounceTop)
             {
                 direction.Y *= -1;
                 allowBounceBottom = true;
                 allowBounceTop = false;
             }
+        }
 
+        public void DetectCollision()
+        {
             // Create a rectangle around the ball to detect collision
             Rectangle ballRect = new Rectangle(location.ToPoint(), size);
             foreach (Player p in PongGame.pongGame.players)
@@ -168,6 +172,15 @@ namespace Pong_Game
                     }
                 }
             }
+        }
+
+        // Move the ball
+        public void Move(float elapsedTime)
+        {
+            TimeSpan timeSinceStart = DateTime.Now - roundStartTime;
+
+            // Move the ball according to the direction, speed and time
+            location += direction * (speed + (int)(timeSinceStart.TotalSeconds * speedMultiplier)) * elapsedTime;
         }
     }
 }
