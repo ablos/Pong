@@ -441,7 +441,7 @@ namespace Pong_Game
         private int livesTextureOffset = 5;                             // Offset for the space between the textures of the lives
         private readonly Point lifeTextureSize = new Point(20, 20);     // Size of the life textures
         private const int speed = 10;                                   // Set speed of player (is for every player)
-        public readonly Point size = new Point(20, 80);                 // Set size of player (is for every player, readonly to prevent accedental edits)
+        public readonly Point size = new Point(20, 100);                // Set size of player (is for every player, readonly to prevent accedental edits)
         public Point location;                                          // Variable to store player location
         private Texture2D texture;                                      // Variable to store the texture of the player
         public Color color;                                             // Variable to store the color of the player
