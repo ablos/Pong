@@ -41,6 +41,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Ball.cs" />
+    <Compile Include="GameOverScreen.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="PongGame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
