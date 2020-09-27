@@ -24,9 +24,12 @@ namespace Pong_Game
         private Button[] buttons = new Button[2];
 
         private string winningColor;
-        private string victoryText = "THE WINNER IS";
+        private string victoryText = "THE WINNER IS ";
 
         private Color winnerColor;
+
+        private Vector2 victoryTextSize;
+        private Vector2 winningColorTextSize;
 
         // Constructor
         public GameOverScreen()
@@ -59,6 +62,9 @@ namespace Pong_Game
                     break;
                 }
             }
+
+            victoryTextSize = PongGame.pongGame.pixelFont.MeasureString(victoryText);
+            winningColorTextSize = PongGame.pongGame.pixelFont.MeasureString(winningColor);
         }
 
         // Update Method
@@ -96,8 +102,10 @@ namespace Pong_Game
             foreach (Button b in buttons)
                 b.Draw();
 
-            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, victoryText, new Vector2((PongGame.pongGame.ScreenSize.X - victoryText.Length) / 2 - winningColor.Length / 2, gameOverPosition.Y + gameOverSize.Y), Color.White);
-            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, winningColor, new Vector2((PongGame.pongGame.ScreenSize.X - winningColor.Length) / 2 + victoryText.Length / 2, gameOverPosition.Y + gameOverSize.Y), winnerColor);
+            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, victoryText, new Vector2((PongGame.pongGame.ScreenSize.X - victoryTextSize.X) / 2 - winningColorTextSize.X / 2, 
+                                                                                                            gameOverPosition.Y + gameOverSize.Y), Color.White);
+            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, winningColor, new Vector2((PongGame.pongGame.ScreenSize.X - winningColorTextSize.X) / 2 + victoryTextSize.X / 2, 
+                                                                                                            gameOverPosition.Y + gameOverSize.Y), winnerColor);
         }
     }
 }
