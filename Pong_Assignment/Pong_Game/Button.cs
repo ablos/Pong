@@ -27,7 +27,6 @@ namespace Pong_Game
 
         public void HandleInput(MouseState mouseState, MouseState previousMouseState)
         {
-
             if (position.X <= mouseState.X && mouseState.X <= position.X + size.X && position.Y <= mouseState.Y && mouseState.Y <= position.Y + size.Y)
             {
                 if (previousMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)

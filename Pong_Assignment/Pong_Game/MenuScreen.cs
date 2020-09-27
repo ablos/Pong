@@ -23,6 +23,8 @@ namespace Pong_Game
         MouseState mouseState;
         MouseState previousMouseState;
 
+        Button quitButton;
+
         // COnstructor
         public MenuScreen()
         {
@@ -34,6 +36,7 @@ namespace Pong_Game
             fourPlayersPosition = new Vector2(3 * (PongGame.pongGame.ScreenSize.X / 5) - (buttonSize.X / 2), 3 * (PongGame.pongGame.ScreenSize.Y / 4) - (buttonSize.Y / 2));
             menuPongPosition = new Vector2((PongGame.pongGame.ScreenSize.X / 2) - (menuPongSize.X / 2), PongGame.pongGame.ScreenSize.Y / 10);
 
+            CreateButtons();
         }
 
         // Deconstructor
@@ -44,35 +47,23 @@ namespace Pong_Game
                 PongGame.pongGame.IsMouseVisible = false;
         }
 
+        private void CreateButtons()
+        {
+            quitButton = new Button(buttonSize, quitPosition, QuitButton);
+        }
+
         // Update method
         public void Update()
         {
             mouseState = Mouse.GetState();
             previousMouseState = mouseState;
 
-            if(quitPosition.X <= mouseState.X && mouseState.X <= quitPosition.X + buttonSize.X && quitPosition.Y <= mouseState.Y && mouseState.Y <= quitPosition.Y + buttonSize.Y)
-            {
-                if(previousMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
-                {
-                    PongGame.pongGame.Exit();
-                }
-            }
+            quitButton.HandleInput(mouseState, previousMouseState);
+        }
 
-            if(twoPlayersPosition.X <= mouseState.X && mouseState.X <= twoPlayersPosition.X + buttonSize.X && twoPlayersPosition.Y <= mouseState.Y && mouseState.Y <= twoPlayersPosition.Y + buttonSize.Y)
-            {
-                if (previousMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
-                {
-                 
-                }
-            }
-
-            if(fourPlayersPosition.X <= mouseState.X && mouseState.X <= fourPlayersPosition.X + buttonSize.X && fourPlayersPosition.Y <= mouseState.Y && mouseState.Y <= fourPlayersPosition.Y + buttonSize.Y)
-            {
-                if (previousMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
-                {
-
-                }
-            }
+        private void QuitButton()
+        {
+            PongGame.pongGame.Exit();
         }
 
         // Draw method
