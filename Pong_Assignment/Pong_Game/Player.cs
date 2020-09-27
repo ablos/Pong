@@ -197,6 +197,7 @@ namespace Pong_Game
                 else
                 {
                     // Game over
+                    PongGame.pongGame.gameOverScreen = new GameOverScreen();
                     PongGame.pongGame.gameState = GameState.GameOver;
                 }
             }
