@@ -36,7 +36,7 @@ namespace Pong_Game
         public Texture2D newGameButtonTexture;              // Variable to store new game button texture in
         public Texture2D menuPongTexture;                   // Variable to store menu title texture in
 
-        public GameState gameState = GameState.Playing;     // Variable to store gamestate in
+        public GameState gameState = GameState.InMenu;     // Variable to store gamestate in
 
         public static PongGame pongGame;                    // Variable to store instance of this class
 

@@ -23,7 +23,7 @@ namespace Pong_Game
         MouseState mouseState;
         MouseState previousMouseState;
 
-        Button quitButton;
+        private Button[] buttons = new Button[3];
 
         // COnstructor
         public MenuScreen()
@@ -49,7 +49,13 @@ namespace Pong_Game
 
         private void CreateButtons()
         {
-            quitButton = new Button(buttonSize, quitPosition, QuitButton);
+            Button quitButton = new Button(buttonSize, quitPosition, QuitButton, PongGame.pongGame.quitButtonTexture);
+            Button twoPlayersButton = new Button(buttonSize, twoPlayersPosition, TwoPlayersButton, PongGame.pongGame.twoPlayersButtonTexture);
+            Button fourPlayersButton = new Button(buttonSize, fourPlayersPosition, FourPlayersButton, PongGame.pongGame.fourPlayersButtonTexture);
+
+            buttons[0] = new Button(buttonSize, quitPosition, QuitButton, PongGame.pongGame.quitButtonTexture);
+            buttons[1] = new Button(buttonSize, twoPlayersPosition, TwoPlayersButton, PongGame.pongGame.twoPlayersButtonTexture);
+            buttons[2] = new Button(buttonSize, fourPlayersPosition, FourPlayersButton, PongGame.pongGame.fourPlayersButtonTexture);
         }
 
         // Update method
@@ -58,27 +64,32 @@ namespace Pong_Game
             mouseState = Mouse.GetState();
             previousMouseState = mouseState;
 
-            quitButton.HandleInput(mouseState, previousMouseState);
+            foreach (Button b in buttons)
+                b.HandleInput(mouseState, previousMouseState);
         }
 
         private void QuitButton()
         {
             PongGame.pongGame.Exit();
         }
+        private void TwoPlayersButton()
+        {
+            PongGame.pongGame.fourPlayers = false;
+            PongGame.pongGame.gameState = GameState.Playing;
+        }
+        private void FourPlayersButton()
+        {
+            PongGame.pongGame.fourPlayers = true;
+            PongGame.pongGame.gameState = GameState.Playing;
+        }
 
         // Draw method
         public void Draw()
         {
-            PongGame.pongGame.GraphicsDevice.Clear(Color.Black);
-
-            PongGame.pongGame.spriteBatch.Begin();
-
-            PongGame.pongGame.spriteBatch.Draw(PongGame.pongGame.quitButtonTexture, quitPosition, Color.White);
-            PongGame.pongGame.spriteBatch.Draw(PongGame.pongGame.twoPlayersButtonTexture, twoPlayersPosition, Color.White);
-            PongGame.pongGame.spriteBatch.Draw(PongGame.pongGame.fourPlayersButtonTexture, fourPlayersPosition, Color.White);
             PongGame.pongGame.spriteBatch.Draw(PongGame.pongGame.menuPongTexture, menuPongPosition, Color.White);
 
-            PongGame.pongGame.spriteBatch.End();
+            foreach (Button b in buttons)
+                b.Draw();
         }
 
     }
