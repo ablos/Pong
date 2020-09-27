@@ -35,8 +35,9 @@ namespace Pong_Game
         public Texture2D menuButtonTexture;                 // Variable to store menu button texture in
         public Texture2D newGameButtonTexture;              // Variable to store new game button texture in
         public Texture2D menuPongTexture;                   // Variable to store menu title texture in
+        public Texture2D gameOverTexture;
 
-        public GameState gameState = GameState.InMenu;     // Variable to store gamestate in
+        public GameState gameState = GameState.InMenu;      // Variable to store gamestate in
 
         public static PongGame pongGame;                    // Variable to store instance of this class
 
@@ -111,6 +112,7 @@ namespace Pong_Game
             newGameButtonTexture = Content.Load<Texture2D>("new-game-button");
             quitButtonTexture = Content.Load<Texture2D>("quit-button");
             twoPlayersButtonTexture = Content.Load<Texture2D>("two-players-button");
+            gameOverTexture = Content.Load<Texture2D>("game-over-button");
         }
 
         /// <summary>
