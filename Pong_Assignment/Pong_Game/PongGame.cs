@@ -2,10 +2,6 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 
 namespace Pong_Game
 {
@@ -27,6 +23,8 @@ namespace Pong_Game
         public Player[] players;                            // Array to store all players created
         public Ball ball;                                   // Variable to store ball in
 
+        public bool sfxOn = true;                           // Variable to store if sound effects should be played or not
+
         public Texture2D lifeTexture;                       // Variable to store life texture in
         public Texture2D ballTexture;                       // Variable to store ball texture in
         public Texture2D quitButtonTexture;                 // Variable to store quit button texture in
@@ -36,6 +34,8 @@ namespace Pong_Game
         public Texture2D newGameButtonTexture;              // Variable to store new game button texture in
         public Texture2D menuPongTexture;                   // Variable to store menu title texture in
         public Texture2D gameOverTexture;                   // Variable to store game over title texture in
+        public Texture2D sfxOnButtonTexture;                // Variable to store sfx on button texture in
+        public Texture2D sfxOffButtonTexture;               // Variable to store sfx off button texture in
 
         public SoundEffect paddleHitSound;                  // Variable to store paddle hit sound in
         public SoundEffect wallHitSound;                    // Variable to store wall hit sound in
@@ -119,6 +119,8 @@ namespace Pong_Game
             quitButtonTexture = Content.Load<Texture2D>("quit-button");
             twoPlayersButtonTexture = Content.Load<Texture2D>("two-players-button");
             gameOverTexture = Content.Load<Texture2D>("game-over-button");
+            sfxOnButtonTexture = Content.Load<Texture2D>("sound-on");
+            sfxOffButtonTexture = Content.Load<Texture2D>("sound-off");
 
             // Load sound effects
             paddleHitSound = Content.Load<SoundEffect>("sfx-paddle-hit");

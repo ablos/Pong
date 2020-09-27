@@ -10,15 +10,19 @@ namespace Pong_Game
         private Vector2 twoPlayersPosition;                     // Store position of two players button
         private Vector2 fourPlayersPosition;                    // Store position of four players button
         private Vector2 menuPongPosition;                       // Store position of title position
+        private Vector2 sfxButtonPositon;                       // Store position of sound effects button
 
         private Point buttonSize = new Point(150, 60);          // Store button size
         private Point quitButtonSize = new Point(100, 40);      // Store quit button size
+        private Point sfxButtonSize = new Point(50, 50);        // Store sfx button size
         private Point menuPongSize = new Point(500, 200);       // Store title size
 
         private MouseState mouseState;                          // Store mouse state
         private MouseState previousMouseState;                  // Store previous mouse state
 
-        private Button[] buttons = new Button[3];               // Store all buttons in the menu
+        private Button[] buttons = new Button[4];               // Store all buttons in the menu
+
+        private const int sfxButtonOffset = 15;                 // Store offset for sfx button (offset from screen corner)
 
         // Constructor
         public MenuScreen()
@@ -31,11 +35,13 @@ namespace Pong_Game
             twoPlayersPosition = new Vector2(2 * (PongGame.pongGame.ScreenSize.X / 5) - (buttonSize.X / 2), 2 * (PongGame.pongGame.ScreenSize.Y / 3) - (buttonSize.Y / 2));
             fourPlayersPosition = new Vector2(3 * (PongGame.pongGame.ScreenSize.X / 5) - (buttonSize.X / 2), 2 * (PongGame.pongGame.ScreenSize.Y / 3) - (buttonSize.Y / 2));
             menuPongPosition = new Vector2((PongGame.pongGame.ScreenSize.X / 2) - (menuPongSize.X / 2), PongGame.pongGame.ScreenSize.Y / 10);
+            sfxButtonPositon = new Vector2(PongGame.pongGame.ScreenSize.X - sfxButtonSize.X - sfxButtonOffset, sfxButtonOffset);
 
             // Create buttons
             buttons[0] = new Button(quitButtonSize, quitPosition, QuitButton, PongGame.pongGame.quitButtonTexture);
             buttons[1] = new Button(buttonSize, twoPlayersPosition, TwoPlayersButton, PongGame.pongGame.twoPlayersButtonTexture);
             buttons[2] = new Button(buttonSize, fourPlayersPosition, FourPlayersButton, PongGame.pongGame.fourPlayersButtonTexture);
+            buttons[3] = new Button(sfxButtonSize, sfxButtonPositon, SfxButton, PongGame.pongGame.sfxOn ? PongGame.pongGame.sfxOnButtonTexture : PongGame.pongGame.sfxOffButtonTexture);
         }
 
         // Update method
@@ -50,6 +56,19 @@ namespace Pong_Game
 
             // Set previous mouse state to current
             previousMouseState = mouseState;
+        }
+
+        // Functionality for sound effects button
+        private void SfxButton()
+        {
+            // Toggle sound effects
+            PongGame.pongGame.sfxOn = !PongGame.pongGame.sfxOn;
+
+            // Switch texture
+            if (PongGame.pongGame.sfxOn)
+                buttons[3].texture = PongGame.pongGame.sfxOnButtonTexture;
+            else
+                buttons[3].texture = PongGame.pongGame.sfxOffButtonTexture;
         }
 
         // Functionality for quit button

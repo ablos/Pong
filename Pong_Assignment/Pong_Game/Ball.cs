@@ -12,7 +12,7 @@ namespace Pong_Game
     // Ball class
     public class Ball
     {
-        private const float speed = 400;                            // Variable to store speed of the ball
+        private float speed = 400;                                  // Variable to store speed of the ball
         public Vector2 location;                                    // Variable to store location of the ball
         private static readonly Point size = new Point(18, 18);     // Variable to store size of the ball
         public Color color = Color.White;                           // Variable to store color of the ball
@@ -23,16 +23,12 @@ namespace Pong_Game
         private bool allowBounceLeft = false;                       // Variable to store if ball is allowed to bounce against players on the left
         private bool allowBounceTop = true;                         // Variable to store if ball is allowed to bounce against the ceiling
         private bool allowBounceBottom = true;                      // Variable to store if ball is allowed to bounce against the bottom
-        private static DateTime roundStartTime;                     // Variable to store when this round has started
-        private const float speedMultiplier = 10;                   // Variable to multiply speed by (using time as well)
+        private const float speedMultiplier = 1.015f;               // Variable to multiply speed by
 
         // Constructor of the ball class
         public Ball(Texture2D texture)
         {
-            this.texture = texture;             // Copy the given texture value to the local texture variable
-
-            // Save the current time as the start of the round
-            roundStartTime = DateTime.Now;
+            this.texture = texture;     // Copy the given texture value to the local texture variable
 
             // Position the ball in the middle of the screen
             location = new Vector2((PongGame.pongGame.ScreenSize.X / 2) - (size.X / 2), (PongGame.pongGame.ScreenSize.Y / 2) - (size.Y / 2));
@@ -43,7 +39,7 @@ namespace Pong_Game
                 r = minimumAngle;
 
             // Set the direction according to the angle
-            direction = new Vector2((PongGame.pongGame.random.Next(1, 3) == 1 ? 1 : -1), (PongGame.pongGame.random.Next(1, 3) == 1 ? 1 : -1) * r);
+            direction = new Vector2(PongGame.pongGame.random.Next(1, 3) == 1 ? 1 : -1, (PongGame.pongGame.random.Next(1, 3) == 1 ? 1 : -1) * r);
 
             // Set restrictions for bouncing
             if (direction.X < 0)
@@ -100,8 +96,9 @@ namespace Pong_Game
                 allowBounceBottom = false;
                 allowBounceTop = true;
 
-                // Play wall hit sound
-                PongGame.pongGame.wallHitSound.Play();
+                // Play wall hit sound when sfx on
+                if (PongGame.pongGame.sfxOn)
+                    PongGame.pongGame.wallHitSound.Play();
             }
             else if (location.Y < 0 && allowBounceTop)
             {
@@ -109,8 +106,9 @@ namespace Pong_Game
                 allowBounceBottom = true;
                 allowBounceTop = false;
 
-                // Play wall hit sound
-                PongGame.pongGame.wallHitSound.Play();
+                // Play wall hit sound when sfx on
+                if (PongGame.pongGame.sfxOn)
+                    PongGame.pongGame.wallHitSound.Play();
             }
         }
 
@@ -177,8 +175,12 @@ namespace Pong_Game
                         direction.Y = 1;
                     }
 
-                    // Play paddle hit sound effect
-                    PongGame.pongGame.paddleHitSound.Play();
+                    // Increase speed of ball
+                    speed *= speedMultiplier;
+                    
+                    // Play paddle hit sound effect when sfx on
+                    if (PongGame.pongGame.sfxOn)
+                        PongGame.pongGame.paddleHitSound.Play();
                 }
             }
         }
@@ -186,10 +188,8 @@ namespace Pong_Game
         // Move the ball
         public void Move(float elapsedTime)
         {
-            TimeSpan timeSinceStart = DateTime.Now - roundStartTime;
-
             // Move the ball according to the direction, speed and time
-            location += direction * (speed + (int)(timeSinceStart.TotalSeconds * speedMultiplier)) * elapsedTime;
+            location += direction * speed * elapsedTime;
         }
     }
 }

@@ -1,11 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 
 namespace Pong_Game
 {
@@ -204,8 +201,9 @@ namespace Pong_Game
                 }
             }
 
-            // Play die sound effect
-            PongGame.pongGame.dieSound.Play();
+            // Play die sound effect when sound effects on
+            if (PongGame.pongGame.sfxOn)
+                PongGame.pongGame.dieSound.Play();
         }
 
         // Move the player - Arg. moveUp to determine if player should move up or down

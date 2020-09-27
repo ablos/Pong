@@ -15,7 +15,7 @@ namespace Pong_Game
         private Vector2 position;                   // Current position of the button
         private Vector2 basePosition;               // Store the position of the button when it isn't hovered over
         private ButtonClicked buttonClicked;        // Local delegate to call when button is clicked
-        private Texture2D texture;                  // Store texture of button
+        public Texture2D texture;                   // Store texture of button
         private bool isLarger = false;              // Store if button is already larger from hover over
         private float sizeMultiplier = 1.1f;        // Size multiplier when button is hovered over
 
