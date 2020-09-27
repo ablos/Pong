@@ -32,7 +32,9 @@ namespace Pong_Game
         private Color winnerColorTwo;
 
         private Vector2 victoryTextSize;
-        private Vector2 winningColorTextSize;
+        private Vector2 winningPlayerTextSizeOne;
+        private Vector2 winningPlayerTextSizeTwo;
+        private Vector2 andTextSize;
 
         // Constructor
         public GameOverScreen()
@@ -57,6 +59,13 @@ namespace Pong_Game
                         SetWinningValues(false);
                 }
             }
+
+            if (PongGame.pongGame.fourPlayers)
+                victoryTextSize = PongGame.pongGame.pixelFont.MeasureString(victoryTextFourPlayers);
+            else
+                victoryTextSize = PongGame.pongGame.pixelFont.MeasureString(victoryTextTwoPlayers);
+
+            andTextSize = PongGame.pongGame.pixelFont.MeasureString("AND");
         }
 
         private void SetWinningValues(bool teamRedGreenWon)
@@ -67,7 +76,8 @@ namespace Pong_Game
                 winningPlayerTwo = "GREEN";
                 winnerColorOne = Color.Red;
                 winnerColorTwo = Color.LimeGreen;
-            }else
+            }
+            else
             {
                 winningPlayerOne = "YELLOW";
                 winningPlayerTwo = "BLUE";
@@ -75,8 +85,8 @@ namespace Pong_Game
                 winnerColorTwo = Color.CornflowerBlue;
             }
 
-            victoryTextSize = PongGame.pongGame.pixelFont.MeasureString(victoryText);
-            winningColorTextSize = PongGame.pongGame.pixelFont.MeasureString(winningColor);
+            winningPlayerTextSizeOne = PongGame.pongGame.pixelFont.MeasureString(winningPlayerOne);
+            winningPlayerTextSizeTwo = PongGame.pongGame.pixelFont.MeasureString(winningPlayerTwo);
         }
 
         // Update Method
@@ -114,10 +124,16 @@ namespace Pong_Game
             foreach (Button b in buttons)
                 b.Draw();
 
-            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, victoryText, new Vector2((PongGame.pongGame.ScreenSize.X - victoryTextSize.X) / 2 - winningColorTextSize.X / 2, 
+            if (PongGame.pongGame.fourPlayers)
+            {
+                // victoryTextFourPlayers + winningPlayerOne (winnerColorOne) + "AND" + winningPlayerTwo (winnerColorTwo)
+            }else
+            {
+                PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, victoryTextTwoPlayers, new Vector2((PongGame.pongGame.ScreenSize.X - victoryTextSize.X) / 2 - winningPlayerTextSizeOne.X / 2,
                                                                                                             gameOverPosition.Y + gameOverSize.Y), Color.White);
-            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, winningColor, new Vector2((PongGame.pongGame.ScreenSize.X - winningColorTextSize.X) / 2 + victoryTextSize.X / 2, 
-                                                                                                            gameOverPosition.Y + gameOverSize.Y), winnerColor);
+                PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, winningPlayerOne, new Vector2((PongGame.pongGame.ScreenSize.X - winningPlayerTextSizeOne.X) / 2 + victoryTextSize.X / 2,
+                                                                                                                gameOverPosition.Y + gameOverSize.Y), winnerColorOne);
+            }
         }
     }
 }
