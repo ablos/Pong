@@ -39,6 +39,10 @@ namespace Pong_Game
         // Update method
         public void Update(GameTime gameTime)
         {
+            // If the gamestate is not equal to playing, stop moving players and ball
+            if (PongGame.pongGame.gameState != GameState.Playing)
+                return;
+
             // Handle player input
             HandleInput();
 

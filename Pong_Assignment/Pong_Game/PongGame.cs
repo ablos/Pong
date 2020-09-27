@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,7 +35,11 @@ namespace Pong_Game
         public Texture2D menuButtonTexture;                 // Variable to store menu button texture in
         public Texture2D newGameButtonTexture;              // Variable to store new game button texture in
         public Texture2D menuPongTexture;                   // Variable to store menu title texture in
-        public Texture2D gameOverTexture;
+        public Texture2D gameOverTexture;                   // Variable to store game over title texture in
+
+        public SoundEffect paddleHitSound;                  // Variable to store paddle hit sound in
+        public SoundEffect wallHitSound;                    // Variable to store wall hit sound in
+        public SoundEffect gameOverSound;                   // Variable to store game over sound in
 
         public GameState gameState = GameState.InMenu;      // Variable to store gamestate in
 
@@ -113,6 +117,11 @@ namespace Pong_Game
             quitButtonTexture = Content.Load<Texture2D>("quit-button");
             twoPlayersButtonTexture = Content.Load<Texture2D>("two-players-button");
             gameOverTexture = Content.Load<Texture2D>("game-over-button");
+
+            // Load sound effects
+            paddleHitSound = Content.Load<SoundEffect>("snd-paddle-hit");
+            wallHitSound = Content.Load<SoundEffect>("snd-wall-hit");
+            gameOverSound = Content.Load<SoundEffect>("snd-game-over");
         }
 
         /// <summary>

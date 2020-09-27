@@ -121,3 +121,21 @@
 /processorParam:TextureFormat=Color
 /build:game-over-button.png
 
+#begin snd-wall-hit.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:snd-wall-hit.mp3
+
+#begin snd-game-over.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:snd-game-over.mp3
+
+#begin snd-paddle-hit.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:snd-paddle-hit.mp3
+

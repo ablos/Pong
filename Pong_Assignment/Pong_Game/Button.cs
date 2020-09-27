@@ -35,7 +35,7 @@ namespace Pong_Game
         {
             if (mouseState.X >= position.X && mouseState.X <= position.X + size.X && mouseState.Y >= position.Y && mouseState.Y <= position.Y + size.Y)
             {
-                Mouse.PlatformSetCursor(MouseCursor.Hand);
+                System.Windows.Forms.Cursor.Current = System.Windows.Forms.Cursors.Hand;
                 if (!isLarger)
                 {
                     size = new Point((int)(baseSize.X * sizeMultiplier), (int)(baseSize.Y * sizeMultiplier));
