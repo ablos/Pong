@@ -39,7 +39,7 @@ namespace Pong_Game
 
         public SoundEffect paddleHitSound;                  // Variable to store paddle hit sound in
         public SoundEffect wallHitSound;                    // Variable to store wall hit sound in
-        public SoundEffect gameOverSound;                   // Variable to store game over sound in
+        public SoundEffect dieSound;                        // Variable to store game over sound in
 
         public SpriteFont pixelFont;                        // Variable to store custom over font in
 
@@ -121,9 +121,9 @@ namespace Pong_Game
             gameOverTexture = Content.Load<Texture2D>("game-over-button");
 
             // Load sound effects
-            //paddleHitSound = Content.Load<SoundEffect>("snd-paddle-hit");
-            //wallHitSound = Content.Load<SoundEffect>("snd-wall-hit");
-            //gameOverSound = Content.Load<SoundEffect>("snd-game-over");
+            paddleHitSound = Content.Load<SoundEffect>("sfx-paddle-hit");
+            wallHitSound = Content.Load<SoundEffect>("sfx-wall-hit");
+            dieSound = Content.Load<SoundEffect>("sfx-die");
 
             // Load font
             pixelFont = Content.Load<SpriteFont>("pixel-font");

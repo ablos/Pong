@@ -121,28 +121,28 @@
 /processorParam:TextureFormat=Color
 /build:game-over-button.png
 
-#begin snd-wall-hit.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:snd-wall-hit.mp3
-
-#begin snd-game-over.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:snd-game-over.mp3
-
-#begin snd-paddle-hit.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:snd-paddle-hit.mp3
-
 #begin pixel-font.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:pixel-font.spritefont
+
+#begin sfx-paddle-hit.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sfx-paddle-hit.mp3
+
+#begin sfx-wall-hit.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sfx-wall-hit.mp3
+
+#begin sfx-die.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:sfx-die.mp3
 

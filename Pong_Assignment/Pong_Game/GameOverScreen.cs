@@ -50,6 +50,7 @@ namespace Pong_Game
 
         private void NewGameButton()
         {
+            PongGame.pongGame.gameHandler = null;
             PongGame.pongGame.gameState = GameState.Playing;
         }
 

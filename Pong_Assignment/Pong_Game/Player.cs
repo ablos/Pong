@@ -203,6 +203,9 @@ namespace Pong_Game
                     PongGame.pongGame.gameState = GameState.GameOver;
                 }
             }
+
+            // Play die sound effect
+            PongGame.pongGame.dieSound.Play();
         }
 
         // Move the player - Arg. moveUp to determine if player should move up or down

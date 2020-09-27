@@ -114,6 +114,10 @@ namespace Pong_Game
         // Reset the game for a new round
         private async void Reset()
         {
+            // If the gamestate is not equal to playing, stop method (this is for drawing the players and ball on the last location at game over screen)
+            if (PongGame.pongGame.gameState != GameState.Playing)
+                return;
+
             // Create a new ball in the middle of the screen
             PongGame.pongGame.ball = new Ball(PongGame.pongGame.ballTexture);
 

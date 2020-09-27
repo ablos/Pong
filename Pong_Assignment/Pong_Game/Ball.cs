@@ -99,12 +99,18 @@ namespace Pong_Game
                 direction.Y *= -1;
                 allowBounceBottom = false;
                 allowBounceTop = true;
+
+                // Play wall hit sound
+                PongGame.pongGame.wallHitSound.Play();
             }
             else if (location.Y < 0 && allowBounceTop)
             {
                 direction.Y *= -1;
                 allowBounceBottom = true;
                 allowBounceTop = false;
+
+                // Play wall hit sound
+                PongGame.pongGame.wallHitSound.Play();
             }
         }
 
@@ -170,6 +176,9 @@ namespace Pong_Game
                     {
                         direction.Y = 1;
                     }
+
+                    // Play paddle hit sound effect
+                    PongGame.pongGame.paddleHitSound.Play();
                 }
             }
         }
