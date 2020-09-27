@@ -22,7 +22,8 @@ namespace Pong_Game
         ~GameOverScreen()
         {
             // Make the mouse pointer invisible
-            PongGame.pongGame.IsMouseVisible = false;
+            if (PongGame.pongGame != null)
+                PongGame.pongGame.IsMouseVisible = false;
         }
 
         // Update Method
