@@ -73,18 +73,6 @@
 /processorParam:TextureFormat=Color
 /build:two-players-button.jpg
 
-#begin menu-button.jpg
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:menu-button.jpg
-
 #begin new-game-button.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -145,4 +133,16 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:sfx-die.mp3
+
+#begin menu-button.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:menu-button.jpg
 

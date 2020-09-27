@@ -31,6 +31,9 @@ namespace Pong_Game
         private Color winnerColorOne;
         private Color winnerColorTwo;
 
+        private Vector2 victoryTextSize;
+        private Vector2 winningColorTextSize;
+
         // Constructor
         public GameOverScreen()
         {
@@ -71,6 +74,9 @@ namespace Pong_Game
                 winnerColorOne = Color.Yellow;
                 winnerColorTwo = Color.CornflowerBlue;
             }
+
+            victoryTextSize = PongGame.pongGame.pixelFont.MeasureString(victoryText);
+            winningColorTextSize = PongGame.pongGame.pixelFont.MeasureString(winningColor);
         }
 
         // Update Method
@@ -108,8 +114,10 @@ namespace Pong_Game
             foreach (Button b in buttons)
                 b.Draw();
 
-            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, victoryTextTwoPlayers, new Vector2((PongGame.pongGame.ScreenSize.X - victoryText.Length) / 2 - winningColor.Length / 2, gameOverPosition.Y + gameOverSize.Y), Color.White);
-            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, winningColor, new Vector2((PongGame.pongGame.ScreenSize.X - winningColor.Length) / 2 + victoryText.Length / 2, gameOverPosition.Y + gameOverSize.Y), winnerColor);
+            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, victoryText, new Vector2((PongGame.pongGame.ScreenSize.X - victoryTextSize.X) / 2 - winningColorTextSize.X / 2, 
+                                                                                                            gameOverPosition.Y + gameOverSize.Y), Color.White);
+            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, winningColor, new Vector2((PongGame.pongGame.ScreenSize.X - winningColorTextSize.X) / 2 + victoryTextSize.X / 2, 
+                                                                                                            gameOverPosition.Y + gameOverSize.Y), winnerColor);
         }
     }
 }
