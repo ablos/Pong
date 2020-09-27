@@ -40,7 +40,8 @@ namespace Pong_Game
         ~MenuScreen()
         {
             // Make the mouse pointer invisible
-            PongGame.pongGame.IsMouseVisible = false;
+            if (PongGame.pongGame != null)
+                PongGame.pongGame.IsMouseVisible = false;
         }
 
         // Update method
