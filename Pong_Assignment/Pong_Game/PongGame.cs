@@ -190,13 +190,13 @@ namespace Pong_Game
             switch (gameState)
             {
                 case GameState.InMenu:
-                    menuScreen.Draw();
+                    if (menuScreen != null) menuScreen.Draw();
                     break;
                 case GameState.Playing:
-                    gameHandler.Draw();
+                    if (gameHandler != null) gameHandler.Draw();
                     break;
                 case GameState.GameOver:
-                    gameOverScreen.Draw();
+                    if (gameOverScreen != null) gameOverScreen.Draw();
                     break;
             }
 

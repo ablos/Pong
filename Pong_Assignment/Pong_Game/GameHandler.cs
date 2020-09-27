@@ -6,11 +6,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Pong_Game
 {
     public class GameHandler
     {
+        private bool startDelayDone = false;        // Variable to store if ball is allowed to move, this allows for a delay at the start of each round
+        private int startDelay = 1500;              // Variable to store how long the start delay should be in milliseconds
+
         // Constructor for PlayerHandler
         public GameHandler()
         {
@@ -37,6 +41,10 @@ namespace Pong_Game
         {
             // Handle player input
             HandleInput();
+
+            // If the start delay hasn't been finished, don't move the ball
+            if (!startDelayDone)
+                return;
 
             // Move ball, detect if out of bounds and detect collision
             PongGame.pongGame.ball.Move((float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -104,7 +112,7 @@ namespace Pong_Game
         }
 
         // Reset the game for a new round
-        private void Reset()
+        private async void Reset()
         {
             // Create a new ball in the middle of the screen
             PongGame.pongGame.ball = new Ball(PongGame.pongGame.ballTexture);
@@ -112,6 +120,16 @@ namespace Pong_Game
             // Reset all players to their start location
             foreach (Player p in PongGame.pongGame.players)
                 p.MoveToStartLocation();
+
+            // Delay the moving of the ball at the start of the round
+            startDelayDone = false;
+            await Task.Delay(startDelay);
+            startDelayDone = true;
+        }
+
+        private async Task Wait(int milliseconds)
+        {
+            await Task.Delay(milliseconds);
         }
 
         private void HandleInput()
