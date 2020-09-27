@@ -40,6 +40,25 @@ namespace Pong_Game
 
             buttons[0] = new Button(buttonSize, newGamePosition, NewGameButton, PongGame.pongGame.newGameButtonTexture);
             buttons[1] = new Button(buttonSize, menuPosition, MenuButton, PongGame.pongGame.menuButtonTexture);
+
+            foreach (Player p in PongGame.pongGame.players)
+            {
+                if (p.lives > 0)
+                {
+                    winnerColor = p.color;
+
+                    if (p.color == Color.Red)
+                        winningColor = "RED";
+                    else if (p.color == Color.Yellow)
+                        winningColor = "YELLOW";
+                    else if (p.color == Color.LimeGreen)
+                        winningColor = "GREEN";
+                    else
+                        winningColor = "BLUE";
+
+                    break;
+                }
+            }
         }
 
         // Update Method
