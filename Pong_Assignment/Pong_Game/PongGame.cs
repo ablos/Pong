@@ -205,6 +205,7 @@ namespace Pong_Game
             // Start the spriteBatch to allow drawing
             spriteBatch.Begin();
 
+            // Decide what to draw depending on the game state
             switch (gameState)
             {
                 case GameState.InMenu:

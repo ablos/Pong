@@ -23,10 +23,13 @@ namespace Pong_Game
 
         private Button[] buttons = new Button[2];
 
-        private string winningColor;
-        private string victoryText = "THE WINNER IS";
+        private string winningPlayerOne;
+        private string winningPlayerTwo;
+        private string victoryTextTwoPlayers = "THE WINNER IS";
+        private string victoryTextFourPlayers = "THE WINNERS ARE";
 
-        private Color winnerColor;
+        private Color winnerColorOne;
+        private Color winnerColorTwo;
 
         // Constructor
         public GameOverScreen()
@@ -45,19 +48,28 @@ namespace Pong_Game
             {
                 if (p.lives > 0)
                 {
-                    winnerColor = p.color;
-
-                    if (p.color == Color.Red)
-                        winningColor = "RED";
-                    else if (p.color == Color.Yellow)
-                        winningColor = "YELLOW";
-                    else if (p.color == Color.LimeGreen)
-                        winningColor = "GREEN";
+                    if (p.color == Color.Red || p.color == Color.LimeGreen)
+                        SetWinningValues(true);
                     else
-                        winningColor = "BLUE";
-
-                    break;
+                        SetWinningValues(false);
                 }
+            }
+        }
+
+        private void SetWinningValues(bool teamRedGreenWon)
+        {
+            if (teamRedGreenWon)
+            {
+                winningPlayerOne = "RED";
+                winningPlayerTwo = "GREEN";
+                winnerColorOne = Color.Red;
+                winnerColorTwo = Color.LimeGreen;
+            }else
+            {
+                winningPlayerOne = "YELLOW";
+                winningPlayerTwo = "BLUE";
+                winnerColorOne = Color.Yellow;
+                winnerColorTwo = Color.CornflowerBlue;
             }
         }
 
@@ -96,7 +108,7 @@ namespace Pong_Game
             foreach (Button b in buttons)
                 b.Draw();
 
-            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, victoryText, new Vector2((PongGame.pongGame.ScreenSize.X - victoryText.Length) / 2 - winningColor.Length / 2, gameOverPosition.Y + gameOverSize.Y), Color.White);
+            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, victoryTextTwoPlayers, new Vector2((PongGame.pongGame.ScreenSize.X - victoryText.Length) / 2 - winningColor.Length / 2, gameOverPosition.Y + gameOverSize.Y), Color.White);
             PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, winningColor, new Vector2((PongGame.pongGame.ScreenSize.X - winningColor.Length) / 2 + victoryText.Length / 2, gameOverPosition.Y + gameOverSize.Y), winnerColor);
         }
     }
