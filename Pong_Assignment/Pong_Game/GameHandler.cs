@@ -117,6 +117,14 @@ namespace Pong_Game
 
         private void HandleInput()
         {
+            // Go back to menu when escape is pressed
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            {
+                PongGame.pongGame.gameState = GameState.InMenu;
+                return;
+            }
+
+
             // Check if playing with four or two players
             if (!PongGame.pongGame.fourPlayers)
             {

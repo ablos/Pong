@@ -129,10 +129,6 @@ namespace Pong_Game
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Exit game when escape is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
             // Only execute this code when in menu
             if (gameState == GameState.InMenu)
             {
