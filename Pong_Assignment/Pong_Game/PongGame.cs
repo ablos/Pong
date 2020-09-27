@@ -41,6 +41,8 @@ namespace Pong_Game
         public SoundEffect wallHitSound;                    // Variable to store wall hit sound in
         public SoundEffect gameOverSound;                   // Variable to store game over sound in
 
+        public SpriteFont customFont;                       // Variable to store custom over font in
+
         public GameState gameState = GameState.InMenu;      // Variable to store gamestate in
 
         public static PongGame pongGame;                    // Variable to store instance of this class
@@ -122,6 +124,9 @@ namespace Pong_Game
             paddleHitSound = Content.Load<SoundEffect>("snd-paddle-hit");
             wallHitSound = Content.Load<SoundEffect>("snd-wall-hit");
             gameOverSound = Content.Load<SoundEffect>("snd-game-over");
+
+            // Load font
+            customFont = Content.Load<SpriteFont>("custom-font");
         }
 
         /// <summary>
