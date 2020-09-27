@@ -23,6 +23,8 @@ namespace Pong_Game
 
         private Button[] buttons = new Button[2];
 
+        private string playerWonText = "nigga";
+
         // Constructor
         public GameOverScreen()
         {
@@ -67,7 +69,7 @@ namespace Pong_Game
             foreach (Button b in buttons)
                 b.Draw();
 
-            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.customFont, "player", new Vector2(), Color.White);
+            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.customFont, playerWonText, new Vector2(), Color.White);
         }
     }
 }
