@@ -48,6 +48,7 @@ namespace Pong_Game
             PongGame.pongGame.spriteBatch.Draw(texture, new Rectangle(location.ToPoint(), size), color);
         }
 
+        // Detect if ball goes out of bounds
         public void DetectOutOfBounds()
         {
             // Make sure the ball doesn't go out of bounds, when it hits the left or right side of the screen, take a live.

@@ -110,8 +110,8 @@ namespace Pong_Game
         private void NewGameButton()
         {
             // Create new game handler and set gamestate to playing
-            PongGame.pongGame.gameHandler = new GameHandler();
             PongGame.pongGame.gameState = GameState.Playing;
+            PongGame.pongGame.gameHandler = new GameHandler();
         }
 
         // Functionality for menu button

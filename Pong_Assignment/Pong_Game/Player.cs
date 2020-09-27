@@ -185,7 +185,7 @@ namespace Pong_Game
                     // If there is no teammate: game over
                     if (!hasTeammate)
                     {
-                        PongGame.pongGame.gameState = GameState.GameOver;
+                        GameOver();
                         return;
                     }
 
@@ -196,15 +196,21 @@ namespace Pong_Game
                 }
                 else
                 {
-                    // Game over
-                    PongGame.pongGame.gameOverScreen = new GameOverScreen();
-                    PongGame.pongGame.gameState = GameState.GameOver;
+                    GameOver();
                 }
             }
 
             // Play die sound effect when sound effects on
             if (PongGame.pongGame.sfxOn)
                 PongGame.pongGame.dieSound.Play();
+        }
+
+        // Game over function
+        private void GameOver()
+        {
+            // Create game over screen instance and set gamestate
+            PongGame.pongGame.gameOverScreen = new GameOverScreen();
+            PongGame.pongGame.gameState = GameState.GameOver;
         }
 
         // Move the player - Arg. moveUp to determine if player should move up or down
