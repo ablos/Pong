@@ -54,7 +54,7 @@ namespace Pong_Game
             {
                 if(previousMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
                 {
-
+                    PongGame.pongGame.Exit();
                 }
             }
 
@@ -62,7 +62,7 @@ namespace Pong_Game
             {
                 if (previousMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
                 {
-
+                 
                 }
             }
 
