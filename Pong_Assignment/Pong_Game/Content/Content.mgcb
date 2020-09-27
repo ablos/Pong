@@ -139,8 +139,10 @@
 /processorParam:Quality=Best
 /build:snd-paddle-hit.mp3
 
-#begin custom-font.ttf
-/importer:
-/processor:
-/build:custom-font.ttf
+#begin pixel-font.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:pixel-font.spritefont
 
