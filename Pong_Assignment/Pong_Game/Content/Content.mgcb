@@ -121,3 +121,8 @@
 /processorParam:TextureFormat=Color
 /build:game-over-button.png
 
+#begin font.001.ttf
+/importer:
+/processor:
+/build:font.001.ttf
+
