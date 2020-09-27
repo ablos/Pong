@@ -98,6 +98,9 @@ namespace Pong_Game
 
             // Execute MonoGame base Initialization method
             base.Initialize();
+
+            // Create menu screen object
+            menuScreen = new MenuScreen();
         }
 
         /// <summary>
@@ -132,15 +135,6 @@ namespace Pong_Game
         }
 
         /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
-        protected override void UnloadContent()
-        {
-            // TODO: Unload any non ContentManager content here
-        }
-
-        /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
@@ -149,47 +143,22 @@ namespace Pong_Game
         {
             // Only execute this code when in menu
             if (gameState == GameState.InMenu)
-            {
-                // If there is no menu screen, create one
-                if (menuScreen == null)
-                    menuScreen = new MenuScreen();
-
                 menuScreen.Update();
-            }else
-            {
-                // Destroy menu screen
-                menuScreen = null;
-            }
+            else if (menuScreen != null)
+                menuScreen = null;      // Destroy menu screen instance
 
             // Only execute this code when game is running
             if (gameState == GameState.Playing)
-            {
-                // If there is no game handler, create one
-                if (gameHandler == null)
-                    gameHandler = new GameHandler();
-
                 gameHandler.Update(gameTime);
-            }
             // Only execute when gamestate is not playing or game over
-            else if (gameState != GameState.GameOver)
-            {
-                // Delete instance of game handler
-                gameHandler = null;
-            }
+            else if (gameState != GameState.GameOver && gameHandler != null)
+                gameHandler = null;     // Delete instance of game handler
 
             // Only execute this code when gamestate is game over
             if (gameState == GameState.GameOver)
-            {
-                // If there is no game over screen, create one
-                if (gameOverScreen == null)
-                    gameOverScreen = new GameOverScreen();
-
                 gameOverScreen.Update();
-            }else
-            {
-                // Delete instance of game over screen
-                gameOverScreen = null;
-            }
+            else
+                gameOverScreen = null;  // Delete instance of game over screen
 
             // Execute MonoGame base Update method
             base.Update(gameTime);

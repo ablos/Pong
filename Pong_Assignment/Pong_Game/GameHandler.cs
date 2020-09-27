@@ -109,8 +109,8 @@ namespace Pong_Game
         // Reset the game for a new round
         private async void Reset()
         {
-            // If the gamestate is not equal to playing, stop method (this is for drawing the players and ball on the last location at game over screen)
-            if (PongGame.pongGame.gameState != GameState.Playing)
+            // If the gamestate is equal to gameover, stop method (this is for drawing the players and ball on their last location at game over screen)
+            if (PongGame.pongGame.gameState == GameState.GameOver)
                 return;
 
             // Create a new ball in the middle of the screen
@@ -126,18 +126,16 @@ namespace Pong_Game
             startDelayDone = true;
         }
 
-        private async Task Wait(int milliseconds)
-        {
-            await Task.Delay(milliseconds);
-        }
-
+        // Handle input
         private void HandleInput()
         {
+            // Get current keyboard state
             KeyboardState keyboardState = Keyboard.GetState();
 
             // Go back to menu when escape is pressed
             if (keyboardState.IsKeyDown(Keys.Escape))
             {
+                PongGame.pongGame.menuScreen = new MenuScreen();
                 PongGame.pongGame.gameState = GameState.InMenu;
                 return;
             }

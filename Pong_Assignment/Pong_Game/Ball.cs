@@ -1,11 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 
 namespace Pong_Game
 {
@@ -23,7 +17,7 @@ namespace Pong_Game
         private bool allowBounceLeft = false;                       // Variable to store if ball is allowed to bounce against players on the left
         private bool allowBounceTop = true;                         // Variable to store if ball is allowed to bounce against the ceiling
         private bool allowBounceBottom = true;                      // Variable to store if ball is allowed to bounce against the bottom
-        private const float speedMultiplier = 1.015f;               // Variable to multiply speed by
+        private const float speedMultiplier = 1.02f;                // Variable to multiply speed by
 
         // Constructor of the ball class
         public Ball(Texture2D texture)
