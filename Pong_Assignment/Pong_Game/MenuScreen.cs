@@ -46,13 +46,47 @@ namespace Pong_Game
         // Update method
         public void Update()
         {
+            mouseState = Mouse.GetState();
+            previousMouseState = mouseState;
 
+            if(quitPosition.X <= mouseState.X && mouseState.X <= quitPosition.X + buttonSize.X && quitPosition.Y <= mouseState.Y && mouseState.Y <= quitPosition.Y + buttonSize.Y)
+            {
+                if(previousMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
+                {
+
+                }
+            }
+
+            if(twoPlayersPosition.X <= mouseState.X && mouseState.X <= twoPlayersPosition.X + buttonSize.X && twoPlayersPosition.Y <= mouseState.Y && mouseState.Y <= twoPlayersPosition.Y + buttonSize.Y)
+            {
+                if (previousMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
+                {
+
+                }
+            }
+
+            if(fourPlayersPosition.X <= mouseState.X && mouseState.X <= fourPlayersPosition.X + buttonSize.X && fourPlayersPosition.Y <= mouseState.Y && mouseState.Y <= fourPlayersPosition.Y + buttonSize.Y)
+            {
+                if (previousMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
+                {
+
+                }
+            }
         }
 
         // Draw method
         public void Draw()
         {
+            PongGame.pongGame.GraphicsDevice.Clear(Color.Black);
 
+            PongGame.pongGame.spriteBatch.Begin();
+
+            PongGame.pongGame.spriteBatch.Draw(PongGame.pongGame.quitButtonTexture, quitPosition, Color.White);
+            PongGame.pongGame.spriteBatch.Draw(PongGame.pongGame.twoPlayersButtonTexture, twoPlayersPosition, Color.White);
+            PongGame.pongGame.spriteBatch.Draw(PongGame.pongGame.fourPlayersButtonTexture, fourPlayersPosition, Color.White);
+            PongGame.pongGame.spriteBatch.Draw(PongGame.pongGame.menuPongTexture, menuPongPosition, Color.White);
+
+            PongGame.pongGame.spriteBatch.End();
         }
 
     }
