@@ -18,14 +18,6 @@ namespace Pong_Game
             PongGame.pongGame.IsMouseVisible = true;
         }
 
-        // Deconstructor
-        ~GameOverScreen()
-        {
-            // Make the mouse pointer invisible
-            if (PongGame.pongGame != null)
-                PongGame.pongGame.IsMouseVisible = false;
-        }
-
         // Update Method
         public void Update()
         {

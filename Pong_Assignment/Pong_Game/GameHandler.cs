@@ -14,8 +14,11 @@ namespace Pong_Game
         // Constructor for PlayerHandler
         public GameHandler()
         {
+            // Set mouse to be invisible
+            PongGame.pongGame.IsMouseVisible = false;
             // Create all players
             CreatePlayers(PongGame.pongGame.fourPlayers);
+            // Call reset method to start new round
             Reset();
         }
 
@@ -75,13 +78,9 @@ namespace Pong_Game
                 playerTwo.playField = PlayField.TopRight;
                 playerTwo.MoveToStartLocation();
 
-                // Create players three and four
-                Player playerThree = new Player(Color.LimeGreen, PlayField.BottomLeft);
-                Player playerFour = new Player(Color.CornflowerBlue, PlayField.BottomRight);
-
-                // Add all players to the player list
-                _players.Add(playerThree);
-                _players.Add(playerFour);
+                // Create players three and four and add to the list
+                _players.Add(new Player(Color.LimeGreen, PlayField.BottomLeft));
+                _players.Add(new Player(Color.CornflowerBlue, PlayField.BottomRight));
             }
 
             // Convert the player list to an array and store it (arrays are faster and use less memory)
@@ -117,8 +116,10 @@ namespace Pong_Game
 
         private void HandleInput()
         {
+            KeyboardState keyboardState = Keyboard.GetState();
+
             // Go back to menu when escape is pressed
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (keyboardState.IsKeyDown(Keys.Escape))
             {
                 PongGame.pongGame.gameState = GameState.InMenu;
                 return;
@@ -131,17 +132,17 @@ namespace Pong_Game
                 // When playing with two players
 
                 // When key S is pressed
-                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                if (keyboardState.IsKeyDown(Keys.S))
                     PongGame.pongGame.players[0].Move(false);
                 // When key W is pressed
-                else if (Keyboard.GetState().IsKeyDown(Keys.W))
+                else if (keyboardState.IsKeyDown(Keys.W))
                     PongGame.pongGame.players[0].Move(true);
 
                 // When arrow down is pressed
-                if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                if (keyboardState.IsKeyDown(Keys.Down))
                     PongGame.pongGame.players[1].Move(false);
                 // When arrow up is pressed
-                else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                else if (keyboardState.IsKeyDown(Keys.Up))
                     PongGame.pongGame.players[1].Move(true);
             }
             else
@@ -155,10 +156,10 @@ namespace Pong_Game
                     if (p.playField == PlayField.TopLeft || p.playField == PlayField.Left)
                     {
                         // When S key is pressed
-                        if (Keyboard.GetState().IsKeyDown(Keys.S))
+                        if (keyboardState.IsKeyDown(Keys.S))
                             p.Move(false);
                         // When W key is pressed
-                        else if (Keyboard.GetState().IsKeyDown(Keys.W))
+                        else if (keyboardState.IsKeyDown(Keys.W))
                             p.Move(true);
                     }
 
@@ -166,10 +167,10 @@ namespace Pong_Game
                     if (p.playField == PlayField.BottomLeft || p.playField == PlayField.Left)
                     {
                         // When C key is pressed
-                        if (Keyboard.GetState().IsKeyDown(Keys.C))
+                        if (keyboardState.IsKeyDown(Keys.C))
                             p.Move(false);
                         // When F key is pressed
-                        else if (Keyboard.GetState().IsKeyDown(Keys.F))
+                        else if (keyboardState.IsKeyDown(Keys.F))
                             p.Move(true);
                     }
 
@@ -177,10 +178,10 @@ namespace Pong_Game
                     if (p.playField == PlayField.TopRight || p.playField == PlayField.Right)
                     {
                         // When arrow down key is pressed
-                        if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                        if (keyboardState.IsKeyDown(Keys.Down))
                             p.Move(false);
                         // When arrow up key is pressed
-                        else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                        else if (keyboardState.IsKeyDown(Keys.Up))
                             p.Move(true);
                     }
 
@@ -188,10 +189,10 @@ namespace Pong_Game
                     if (p.playField == PlayField.BottomRight || p.playField == PlayField.Right)
                     {
                         // When ? key is pressed
-                        if (Keyboard.GetState().IsKeyDown(Keys.OemQuestion))
+                        if (keyboardState.IsKeyDown(Keys.OemQuestion))
                             p.Move(false);
                         // When ' key is pressed
-                        else if (Keyboard.GetState().IsKeyDown(Keys.OemQuotes))
+                        else if (keyboardState.IsKeyDown(Keys.OemQuotes))
                             p.Move(true);
                     }
                 }

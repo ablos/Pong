@@ -20,8 +20,8 @@ namespace Pong_Game
         private Point buttonSize = new Point(200, 80);
         private Point menuPongSize = new Point(600, 240);
 
-        MouseState mouseState;
-        MouseState previousMouseState;
+        private MouseState mouseState;
+        private MouseState previousMouseState;
 
         private Button[] buttons = new Button[3];
 
@@ -39,14 +39,6 @@ namespace Pong_Game
             CreateButtons();
         }
 
-        // Deconstructor
-        ~MenuScreen()
-        {
-            // Make the mouse pointer invisible
-            if (PongGame.pongGame != null)
-                PongGame.pongGame.IsMouseVisible = false;
-        }
-
         private void CreateButtons()
         {
             Button quitButton = new Button(buttonSize, quitPosition, QuitButton, PongGame.pongGame.quitButtonTexture);
@@ -62,10 +54,11 @@ namespace Pong_Game
         public void Update()
         {
             mouseState = Mouse.GetState();
-            previousMouseState = mouseState;
 
             foreach (Button b in buttons)
                 b.HandleInput(mouseState, previousMouseState);
+
+            previousMouseState = mouseState;
         }
 
         private void QuitButton()
