@@ -62,12 +62,14 @@ namespace Pong_Game
         // Draw method
         public void Draw()
         {
+            PongGame.pongGame.gameHandler.Draw();
+
             PongGame.pongGame.spriteBatch.Draw(PongGame.pongGame.gameOverTexture, new Rectangle(gameOverPosition.ToPoint(), gameOverSize), Color.White);
 
             foreach (Button b in buttons)
                 b.Draw();
 
-            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.customFont, "player", new Vector2(), Color.White);
+            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, "player", new Vector2(), Color.White);
         }
     }
 }

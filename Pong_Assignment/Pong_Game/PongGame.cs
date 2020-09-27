@@ -41,7 +41,7 @@ namespace Pong_Game
         public SoundEffect wallHitSound;                    // Variable to store wall hit sound in
         public SoundEffect gameOverSound;                   // Variable to store game over sound in
 
-        public SpriteFont customFont;                       // Variable to store custom over font in
+        public SpriteFont pixelFont;                        // Variable to store custom over font in
 
         public GameState gameState = GameState.InMenu;      // Variable to store gamestate in
 
@@ -121,12 +121,12 @@ namespace Pong_Game
             gameOverTexture = Content.Load<Texture2D>("game-over-button");
 
             // Load sound effects
-            paddleHitSound = Content.Load<SoundEffect>("snd-paddle-hit");
-            wallHitSound = Content.Load<SoundEffect>("snd-wall-hit");
-            gameOverSound = Content.Load<SoundEffect>("snd-game-over");
+            //paddleHitSound = Content.Load<SoundEffect>("snd-paddle-hit");
+            //wallHitSound = Content.Load<SoundEffect>("snd-wall-hit");
+            //gameOverSound = Content.Load<SoundEffect>("snd-game-over");
 
             // Load font
-            customFont = Content.Load<SpriteFont>("custom-font");
+            pixelFont = Content.Load<SpriteFont>("pixel-font");
         }
 
         /// <summary>
@@ -167,7 +167,9 @@ namespace Pong_Game
                     gameHandler = new GameHandler();
 
                 gameHandler.Update(gameTime);
-            }else
+            }
+            // Only execute when gamestate is not playing or game over
+            else if (gameState != GameState.GameOver)
             {
                 // Delete instance of game handler
                 gameHandler = null;
