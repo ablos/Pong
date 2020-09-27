@@ -23,6 +23,11 @@ namespace Pong_Game
 
         private Button[] buttons = new Button[2];
 
+        private string winningColor;
+        private string victoryText = "THE WINNER IS";
+
+        private Color winnerColor;
+
         // Constructor
         public GameOverScreen()
         {
@@ -46,6 +51,8 @@ namespace Pong_Game
                 b.HandleInput(mouseState, previousMouseState);
 
             previousMouseState = mouseState;
+
+            
         }
 
         private void NewGameButton()
@@ -70,7 +77,8 @@ namespace Pong_Game
             foreach (Button b in buttons)
                 b.Draw();
 
-            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, "player", new Vector2(), Color.White);
+            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, victoryText, new Vector2((PongGame.pongGame.ScreenSize.X - victoryText.Length) / 2 - winningColor.Length / 2, gameOverPosition.Y + gameOverSize.Y), Color.White);
+            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.pixelFont, winningColor, new Vector2((PongGame.pongGame.ScreenSize.X - winningColor.Length) / 2 + victoryText.Length / 2, gameOverPosition.Y + gameOverSize.Y), winnerColor);
         }
     }
 }
