@@ -66,6 +66,8 @@ namespace Pong_Game
 
             foreach (Button b in buttons)
                 b.Draw();
+
+            PongGame.pongGame.spriteBatch.DrawString(PongGame.pongGame.font, "player", new Vector2(
         }
     }
 }
