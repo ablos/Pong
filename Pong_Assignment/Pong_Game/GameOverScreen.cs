@@ -109,15 +109,16 @@ namespace Pong_Game
         // Functionality for new game button
         private void NewGameButton()
         {
-            // Destroy game handler and set gamestate to playing
-            PongGame.pongGame.gameHandler = null;
+            // Create new game handler and set gamestate to playing
             PongGame.pongGame.gameState = GameState.Playing;
+            PongGame.pongGame.gameHandler = new GameHandler();
         }
 
         // Functionality for menu button
         private void MenuButton()
         {
-            // Set gamestate to menu
+            // Create new screen menu and set gamestate to in menu
+            PongGame.pongGame.menuScreen = new MenuScreen();
             PongGame.pongGame.gameState = GameState.InMenu;
         }
 

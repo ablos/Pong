@@ -83,6 +83,7 @@ namespace Pong_Game
         {
             // Set to play with two players and start game
             PongGame.pongGame.fourPlayers = false;
+            PongGame.pongGame.gameHandler = new GameHandler();
             PongGame.pongGame.gameState = GameState.Playing;
         }
 
@@ -91,6 +92,7 @@ namespace Pong_Game
         {
             // Set to play with four players and start game
             PongGame.pongGame.fourPlayers = true;
+            PongGame.pongGame.gameHandler = new GameHandler();
             PongGame.pongGame.gameState = GameState.Playing;
         }
 
