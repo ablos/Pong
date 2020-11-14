@@ -64,7 +64,7 @@ namespace Pong_Game
             // Toggle sound effects
             PongGame.pongGame.sfxOn = !PongGame.pongGame.sfxOn;
 
-            // Switch texture
+            // Switch textures
             if (PongGame.pongGame.sfxOn)
                 buttons[3].texture = PongGame.pongGame.sfxOnButtonTexture;
             else
